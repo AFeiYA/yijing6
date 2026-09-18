@@ -1,0 +1,907 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "prototype-2.0",
+  "purpose": "策划配置参考，需要 Unity 导入器；不是可运行工程。图标、完整对话、本地化键和常客模板另行制作。",
+  "rules": {
+    "columns": 7,
+    "rows": 9,
+    "initialOpenRows": 6,
+    "initialInventorySlots": 6,
+    "maxInventorySlots": 12,
+    "maxTier": 5,
+    "initialStones": 30,
+    "stonesPerBaseUnit": 2,
+    "energyEnabled": false,
+    "producerCooldownEnabled": false,
+    "oracleOrdersPerDay": 3,
+    "prototypeUpperBits": "000",
+    "lineOrder": "bottom-to-top",
+    "finalBoardRowUnlockOrder": "E18",
+    "inventoryExpansionOrder": "E18"
+  },
+  "items": [
+    {
+      "id": "tea_01",
+      "chainId": "tea",
+      "tier": 1,
+      "baseUnits": 1,
+      "nextId": "tea_02",
+      "displayNameZh": "一撮山茶"
+    },
+    {
+      "id": "tea_02",
+      "chainId": "tea",
+      "tier": 2,
+      "baseUnits": 2,
+      "nextId": "tea_03",
+      "displayNameZh": "一包山茶"
+    },
+    {
+      "id": "tea_03",
+      "chainId": "tea",
+      "tier": 3,
+      "baseUnits": 4,
+      "nextId": "tea_04",
+      "displayNameZh": "小罐清茶"
+    },
+    {
+      "id": "tea_04",
+      "chainId": "tea",
+      "tier": 4,
+      "baseUnits": 8,
+      "nextId": "tea_05",
+      "displayNameZh": "精选茶罐"
+    },
+    {
+      "id": "tea_05",
+      "chainId": "tea",
+      "tier": 5,
+      "baseUnits": 16,
+      "nextId": null,
+      "displayNameZh": "山房茶礼"
+    },
+    {
+      "id": "ceramic_01",
+      "chainId": "ceramic",
+      "tier": 1,
+      "baseUnits": 1,
+      "nextId": "ceramic_02",
+      "displayNameZh": "素面小盏"
+    },
+    {
+      "id": "ceramic_02",
+      "chainId": "ceramic",
+      "tier": 2,
+      "baseUnits": 2,
+      "nextId": "ceramic_03",
+      "displayNameZh": "成对小盏"
+    },
+    {
+      "id": "ceramic_03",
+      "chainId": "ceramic",
+      "tier": 3,
+      "baseUnits": 4,
+      "nextId": "ceramic_04",
+      "displayNameZh": "青瓷茶杯"
+    },
+    {
+      "id": "ceramic_04",
+      "chainId": "ceramic",
+      "tier": 4,
+      "baseUnits": 8,
+      "nextId": "ceramic_05",
+      "displayNameZh": "青瓷茶壶"
+    },
+    {
+      "id": "ceramic_05",
+      "chainId": "ceramic",
+      "tier": 5,
+      "baseUnits": 16,
+      "nextId": null,
+      "displayNameZh": "青瓷茶具"
+    }
+  ],
+  "producers": [
+    {
+      "id": "tea_producer",
+      "chainId": "tea",
+      "outputItemId": "tea_01",
+      "unlock": "game_start"
+    },
+    {
+      "id": "ceramic_producer",
+      "chainId": "ceramic",
+      "outputItemId": "ceramic_01",
+      "unlock": "after_first_merge_before_E01_choices"
+    }
+  ],
+  "orders": [
+    {
+      "id": "E01",
+      "storyNode": "elena_01",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E02",
+      "storyNode": "elena_01",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E03",
+      "storyNode": "elena_01",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E04",
+      "storyNode": "elena_02",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E05",
+      "storyNode": "elena_02",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E06",
+      "storyNode": "elena_02",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E07",
+      "storyNode": "elena_03",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 16
+    },
+    {
+      "id": "E08",
+      "storyNode": "elena_03",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E09",
+      "storyNode": "elena_03",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E10",
+      "storyNode": "elena_04",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E11",
+      "storyNode": "elena_04",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E12",
+      "storyNode": "elena_04",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E13",
+      "storyNode": "elena_05",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E14",
+      "storyNode": "elena_05",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_03",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 24
+    },
+    {
+      "id": "E15",
+      "storyNode": "elena_05",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 32
+    },
+    {
+      "id": "E16",
+      "storyNode": "elena_06",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 32
+    },
+    {
+      "id": "E17",
+      "storyNode": "elena_06",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 32
+    },
+    {
+      "id": "E18",
+      "storyNode": "elena_06",
+      "variants": [
+        {
+          "id": "quiet",
+          "lineValue": 0,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "id": "act",
+          "lineValue": 1,
+          "requirements": [
+            {
+              "itemId": "tea_04",
+              "quantity": 1
+            },
+            {
+              "itemId": "ceramic_04",
+              "quantity": 1
+            }
+          ]
+        }
+      ],
+      "rewardStones": 32
+    }
+  ],
+  "storyNodes": [
+    {
+      "id": "elena_01",
+      "orderIds": [
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "prerequisiteStoryNodes": [],
+      "prerequisiteRenovation": null
+    },
+    {
+      "id": "elena_02",
+      "orderIds": [
+        "E04",
+        "E05",
+        "E06"
+      ],
+      "prerequisiteStoryNodes": [
+        "elena_01"
+      ],
+      "prerequisiteRenovation": "lamp"
+    },
+    {
+      "id": "elena_03",
+      "orderIds": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "prerequisiteStoryNodes": [
+        "elena_02"
+      ],
+      "prerequisiteRenovation": "desk"
+    },
+    {
+      "id": "elena_04",
+      "orderIds": [
+        "E10",
+        "E11",
+        "E12"
+      ],
+      "prerequisiteStoryNodes": [
+        "elena_03"
+      ],
+      "prerequisiteRenovation": "window"
+    },
+    {
+      "id": "elena_05",
+      "orderIds": [
+        "E13",
+        "E14",
+        "E15"
+      ],
+      "prerequisiteStoryNodes": [
+        "elena_04"
+      ],
+      "prerequisiteRenovation": null
+    },
+    {
+      "id": "elena_06",
+      "orderIds": [
+        "E16",
+        "E17",
+        "E18"
+      ],
+      "prerequisiteStoryNodes": [
+        "elena_05"
+      ],
+      "prerequisiteRenovation": null
+    }
+  ],
+  "renovations": [
+    {
+      "id": "lamp",
+      "cost": 40,
+      "requiredAfterOrder": "E01",
+      "mandatory": true,
+      "prerequisiteRenovation": null
+    },
+    {
+      "id": "desk",
+      "cost": 60,
+      "requiredAfterOrder": "E06",
+      "mandatory": true,
+      "prerequisiteRenovation": "lamp",
+      "unlocksBoardRow": 7
+    },
+    {
+      "id": "window",
+      "cost": 80,
+      "requiredAfterOrder": "E09",
+      "mandatory": true,
+      "prerequisiteRenovation": "desk",
+      "unlocksBoardRow": 8
+    },
+    {
+      "id": "spring",
+      "cost": 100,
+      "requiredAfterOrder": "E12",
+      "mandatory": false
+    },
+    {
+      "id": "bell",
+      "cost": 140,
+      "requiredAfterOrder": "E15",
+      "mandatory": false
+    },
+    {
+      "id": "display",
+      "cost": 180,
+      "requiredAfterOrder": "E18",
+      "mandatory": false
+    }
+  ],
+  "oracleCards": [
+    {
+      "key": "000_000",
+      "lowerBits": "000",
+      "upperBits": "000",
+      "kingWenId": 2,
+      "nameZh": "坤",
+      "titleZh": "给自己一点余地",
+      "bodyZh": "一张空椅、一段沉默，也可以是认真照料生活的方式。你不必立刻把每个空隙填满。今天若有一件事尚未决定，先让它在那里，再看看自己需要怎样的空间。这不是放弃，而是允许自己在看清之前，暂时不把答案说满。",
+      "promptZh": "今天有什么可以不急着填满？"
+    },
+    {
+      "key": "100_000",
+      "lowerBits": "100",
+      "upperBits": "000",
+      "kingWenId": 24,
+      "nameZh": "复",
+      "titleZh": "从小处回来",
+      "bodyZh": "重新开始不一定需要一个宏大的决定。把杯子洗净，打开窗，或回到一件曾让你安稳的小事，都是可以发生的起点。今天不用补齐所有错过的进度。只做一件让你愿意再回来一次的事，也可以。",
+      "promptZh": "哪件很小的事，能让你重新开始？"
+    },
+    {
+      "key": "010_000",
+      "lowerBits": "010",
+      "upperBits": "000",
+      "kingWenId": 7,
+      "nameZh": "师",
+      "titleZh": "让事情各就其位",
+      "bodyZh": "当许多事情一起到来，可以先分清轻重，再决定由谁承担。你不必一个人站在所有位置上。今天试着把一件需要协作的事说清楚，留出别人回应的空间。安排不是控制一切，而是让有限的力气有地方落下。",
+      "promptZh": "哪一件事可以请别人一起承担？"
+    },
+    {
+      "key": "110_000",
+      "lowerBits": "110",
+      "upperBits": "000",
+      "kingWenId": 19,
+      "nameZh": "临",
+      "titleZh": "靠近一点",
+      "bodyZh": "靠近一个人，有时从不急着给答案开始。先听见对方正在说什么，也留意自己是否有余力。今天可以尝试一次缓慢而清楚的回应。温柔不要求你答应所有事情，只要求这一次靠近是你愿意的。",
+      "promptZh": "你愿意先听完谁的一句话？"
+    },
+    {
+      "key": "001_000",
+      "lowerBits": "001",
+      "upperBits": "000",
+      "kingWenId": 15,
+      "nameZh": "谦",
+      "titleZh": "不必把自己缩小",
+      "bodyZh": "安静不意味着你做过的事没有分量。你可以不争抢目光，也不必把自己的努力藏到看不见。今天给一件已经完成的小事一个准确的名字，承认它花过你的时间。看见自己，不会夺走别人应有的位置。",
+      "promptZh": "今天有什么努力值得被你承认？"
+    },
+    {
+      "key": "101_000",
+      "lowerBits": "101",
+      "upperBits": "000",
+      "kingWenId": 36,
+      "nameZh": "明夷",
+      "titleZh": "护住一点光",
+      "bodyZh": "并非每一束光都需要在此刻照得更远。有时把它安放在避风处，比勉强燃烧更合适。今天可以关掉一项不必要的打扰，或把一句尚未想好的话留到以后。保护精力，也是一种认真对待生活的方式。",
+      "promptZh": "哪一个边界能让你保存精力？"
+    },
+    {
+      "key": "011_000",
+      "lowerBits": "011",
+      "upperBits": "000",
+      "kingWenId": 46,
+      "nameZh": "升",
+      "titleZh": "让一步成为一步",
+      "bodyZh": "有些变化在一天里很难看见，却会在一次次小行动中留下痕迹。今天把目标缩到可以开始的大小，完成之后停下来看看。你不需要先证明终点一定值得，才允许自己迈出这一步。",
+      "promptZh": "今天可以完成的最小一步是什么？"
+    },
+    {
+      "key": "111_000",
+      "lowerBits": "111",
+      "upperBits": "000",
+      "kingWenId": 11,
+      "nameZh": "泰",
+      "titleZh": "为彼此留一条路",
+      "bodyZh": "当话能够来回流动，许多事情会松开一点。今天可以清楚地说出一个需要，也为对方保留不同的回答。顺畅不等于永远没有分歧，而是双方仍愿意为彼此留一条能走过去的路。",
+      "promptZh": "你希望哪一次沟通更轻一点？"
+    }
+  ]
+}

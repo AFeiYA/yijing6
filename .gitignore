@@ -1,0 +1,41 @@
+# Unity-generated files
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/[Aa]rtifacts/
+
+# Editor and IDE state
+.DS_Store
+.idea/
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.suo
+*.pidb
+*.opendb
+*.VC.db
+*.unitypackage
+*.log
+sysinfo.txt
+
+# Local credentials and signing assets
+.env
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.keystore
+*.jks
+*.mobileprovision
+*.cer
+
+# Preserve Unity .meta files and Packages/packages-lock.json.

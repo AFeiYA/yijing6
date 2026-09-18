@@ -1,0 +1,5 @@
+{
+  "name": "Yijing.Infrastructure",
+  "rootNamespace": "Yijing.Infrastructure",
+  "references": ["Yijing.Domain"]
+}

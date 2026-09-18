@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Yijing/Scenes/Bootstrap.unity
+    guid: af1840e1bd3d84eb8a664aa6292de71b
+  - enabled: 1
+    path: Assets/Yijing/Scenes/Game.unity
+    guid: 7a1116568160b4727ae72b43f5c57480
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

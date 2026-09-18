@@ -1,0 +1,14 @@
+{
+  "name": "Yijing.Editor",
+  "rootNamespace": "Yijing.Editor",
+  "references": [
+    "Yijing.Domain",
+    "Yijing.Infrastructure",
+    "Yijing.Application",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Universal.2D.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

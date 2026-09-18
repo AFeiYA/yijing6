@@ -1,0 +1,5 @@
+{
+  "name": "Yijing.PlayModeTests",
+  "references": ["Yijing.Application"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

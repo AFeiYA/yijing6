@@ -1,0 +1,6 @@
+{
+  "name": "Yijing.EditModeTests",
+  "references": ["Yijing.Domain", "Yijing.Infrastructure", "Yijing.Editor"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}
