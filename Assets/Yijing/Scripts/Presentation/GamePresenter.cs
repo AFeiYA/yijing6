@@ -56,9 +56,9 @@ namespace Yijing.Presentation
                 var repository = new JsonGameStore(path, config);
                 Session = new GameSession(config, repository, () => DateTimeOffset.Now);
                 variantIndex = Session.Snapshot.guide.preferredVariant;
-                BuildTeaTable(); Refresh();
+                BuildTeaTable(); BuildRoomView(); Refresh();
                 Tell(repository.RecoveryNotice ?? (Session.Snapshot.firstMerge ? "茶席已恢复，按自己的节奏继续。" : "取两撮山茶，拖到一起，开始今天的茶席。"));
-                ResumeGuidance();
+                ShowRoomHome(); ResumeGuidance();
             } catch (Exception e) {
                 Debug.LogError("Yijing could not start: " + e.Message);
                 Label(root, "暂时无法打开茶舍", 36, 180, 468, 60, 28);
@@ -83,7 +83,7 @@ namespace Yijing.Presentation
         private void Update()
         {
             if (root != null) FitSafeArea();
-            AnimateGuide();
+            AnimateGuide(); AnimateRoom();
             if (Session != null && lastDate != DateTimeOffset.Now.ToString("yyyy-MM-dd")) {
                 lastDate = DateTimeOffset.Now.ToString("yyyy-MM-dd"); Refresh();
             }
@@ -100,7 +100,7 @@ namespace Yijing.Presentation
         private void BuildTeaTable()
         {
             Panel(root, "Header shade", 0, 0, 540, 62, new Color(.10f, .20f, .18f, .76f));
-            Label(root, "易 · 境", 26, 6, 220, 50, 29, Color.white);
+            ActionButton(root, "back_to_room", "‹ 回茶舍", 26, 10, 144, 44, ShowRoomHome, 20);
             wallet = Label(root, "", 225, 19, 193, 32, 18, Color.white, TextAnchor.MiddleRight);
             ActionButton(root, "help", "引导", 438, 10, 76, 44, () => { if (returnSession != null) ExitPractice(); else ShowHelp(); }, 18);
             ImageAt(root, "Elena", art.elenaPortrait, 16, 64, 98, 100, Color.white, true);
@@ -172,7 +172,7 @@ namespace Yijing.Presentation
             }));
             deliver.interactable = s.firstMerge && order != null;
             if (order?.id == "E02" && !s.lampRepaired) deliver.interactable = false;
-            deliver.GetComponentInChildren<Text>().text = order == null ? "已完成" : "交付 · +" + order.rewardStones;
+            deliver.GetComponentInChildren<Text>().text = order == null ? "已完成" : "备好 · 端茶";
             ceramic.interactable = s.firstMerge;
             recycle.interactable = selected >= 0;
             inventoryLabel.text = selected >= 0 ? "存入储物架" : "储物架  " + s.inventory.Count(x => !x.Empty) + "/6";
@@ -180,9 +180,11 @@ namespace Yijing.Presentation
             selection.text = selected < 0 ? "拖动相同物品合成，也可依次点击两个格子" : Session.Item(s.board[selected].itemId).displayNameZh + " · " + Session.Item(s.board[selected].itemId).tier + " 阶　点另一格移动或合成";
             daily.text = Session.Today?.lines.Count == 3 ? "今日手账 · 查看卦卡" : "今日手账 · " + (Session.Today?.lines.Count ?? 0) + " / 3";
             UpdateGuidance();
+            if (RoomVisible) room.SetAsLastSibling();
+            if (modal != null) modal.SetAsLastSibling();
         }
 
-        public void Produce(string chain) => Run(Session.Produce(chain, Session.Snapshot.revision), chain == "tea" ? "取来一撮山茶。" : "取来一只小盏。");
+        public void Produce(string chain) { var result = Session.Produce(chain, Session.Snapshot.revision); Run(result, chain == "tea" ? "取来一撮山茶。" : "取来一只小盏。"); if (result.Success && chain == "ceramic") sound?.Cup(); }
 
         public void SelectCell(int index)
         {
@@ -200,7 +202,7 @@ namespace Yijing.Presentation
             bool merge = to >= 0 && to < cells.Count && !before.board[from].Empty && before.board[from].itemId == before.board[to].itemId && Session.Item(before.board[from].itemId).tier < 5;
             var result = Session.Move(from, to, id, revision);
             Run(result, merge ? "合成了 " + Session.Item(Session.Snapshot.board[to].itemId).displayNameZh + "。" : "物品已安放。");
-            if (result.Success && merge) StartCoroutine(Pulse(cells[to].icon.rectTransform));
+            if (result.Success && merge) { StartCoroutine(Pulse(cells[to].icon.rectTransform)); sound?.Cup(); }
         }
 
         public void BeginItemDrag(int index, PointerEventData e)
@@ -285,6 +287,7 @@ namespace Yijing.Presentation
         private void RenderDelivery(string error)
         {
             var order = Session.Order(orderSlot); if (order == null) return;
+            if (orderSlot == 0 && Session.SelectMaterials(order.variants[variantIndex], includeInventory) != null) { ShowTeaRitual(); return; }
             NewModal("为来客备好茶席");
             var variant = order.variants[variantIndex];
             var beat = orderSlot == 0 ? story.beats[Session.Snapshot.completedStory] : null;
@@ -327,20 +330,18 @@ namespace Yijing.Presentation
 
         private void ShowSanctuary()
         {
-            NewModal("山房 · 门边灯");
-            ImageAt(modal, "Room view", art.sanctuaryBase, 45, 160, 450, 330, Color.white, true);
             var s = Session.Snapshot;
-            // The v1 room painting is flattened. This overlay is explicitly a prototype light response.
-            Panel(modal, "Warm light response", 45, 160, 450, 330, s.lampRepaired ? new Color(1f, .73f, .30f, .15f) : new Color(.08f, .13f, .16f, .28f));
-            Label(modal, s.lampRepaired ? story.lampAfter : story.lampBefore, 48, 514, 444, 218, 20);
-            ActionButton(modal, "repair_lamp", s.lampRepaired ? "门灯已点亮" : "点亮门灯 · 40 灵石", 48, 749, 444, 52, () => {
-                var result = Session.RepairLamp(Guid.NewGuid().ToString("N"), s.revision);
-                Run(result, "门边灯已点亮。"); if (result.Success) ShowSanctuary();
-            }).interactable = !s.lampRepaired && s.completedStory >= 1 && s.stones >= 40;
-            if (s.lampRepaired) ActionButton(modal, "lamp_continue", s.completedStory < 3 ? "回到茶案 · 继续故事" : "回到茶案", 48, 820, 444, 48, () => {
-                CloseModal(); orderSlot = 0; Refresh();
-                if (s.completedStory < 3) ShowStoryBrief(s.completedStory);
-            });
+            int cost = config.renovations.First(x => x.id == "lamp").cost;
+            RoomPage("门边 · 一盏灯", s.lampRepaired ? story.lampAfter : story.lampBefore,
+                s.lampRepaired ? "回茶案 · 继续故事" : "添一盏灯 · " + cost + " 灵石",
+                s.lampRepaired ? "lamp_continue" : "repair_lamp", () => {
+                    if (Session.Snapshot.lampRepaired) { ShowStoryBrief(Math.Min(Session.Snapshot.completedStory, 2)); return; }
+                    var result = Session.RepairLamp(Guid.NewGuid().ToString("N"), Session.Snapshot.revision);
+                    if (result.Success) { Refresh(); sound.Cup(); ShowSanctuary(); }
+                    else roomBody.text = result.Message;
+                });
+            roomPrimary.interactable = s.lampRepaired || (s.completedStory >= 1 && s.stones >= cost);
+            RoomSecondary("room_home", "回到窗边", ShowRoomHome);
         }
 
         private void ShowJournal(int historyOffset = 0)

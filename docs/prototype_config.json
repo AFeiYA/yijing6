@@ -125,7 +125,7 @@
           "lineValue": 0,
           "requirements": [
             {
-              "itemId": "tea_03",
+              "itemId": "tea_02",
               "quantity": 2
             }
           ]
@@ -135,17 +135,17 @@
           "lineValue": 1,
           "requirements": [
             {
-              "itemId": "tea_03",
+              "itemId": "tea_02",
               "quantity": 1
             },
             {
-              "itemId": "ceramic_03",
+              "itemId": "ceramic_02",
               "quantity": 1
             }
           ]
         }
       ],
-      "rewardStones": 16
+      "rewardStones": 8
     },
     {
       "id": "E02",
@@ -157,10 +157,10 @@
           "requirements": [
             {
               "itemId": "tea_02",
-              "quantity": 2
+              "quantity": 1
             },
             {
-              "itemId": "ceramic_03",
+              "itemId": "ceramic_02",
               "quantity": 1
             }
           ]
@@ -170,17 +170,17 @@
           "lineValue": 1,
           "requirements": [
             {
-              "itemId": "tea_03",
-              "quantity": 1
+              "itemId": "tea_01",
+              "quantity": 2
             },
             {
               "itemId": "ceramic_02",
-              "quantity": 2
+              "quantity": 1
             }
           ]
         }
       ],
-      "rewardStones": 16
+      "rewardStones": 8
     },
     {
       "id": "E03",
@@ -192,7 +192,7 @@
           "requirements": [
             {
               "itemId": "tea_03",
-              "quantity": 2
+              "quantity": 1
             }
           ]
         },
@@ -201,17 +201,17 @@
           "lineValue": 1,
           "requirements": [
             {
-              "itemId": "tea_03",
+              "itemId": "tea_02",
               "quantity": 1
             },
             {
-              "itemId": "ceramic_03",
+              "itemId": "ceramic_02",
               "quantity": 1
             }
           ]
         }
       ],
-      "rewardStones": 16
+      "rewardStones": 8
     },
     {
       "id": "E04",
@@ -786,7 +786,7 @@
   "renovations": [
     {
       "id": "lamp",
-      "cost": 40,
+      "cost": 30,
       "requiredAfterOrder": "E01",
       "mandatory": true,
       "prerequisiteRenovation": null

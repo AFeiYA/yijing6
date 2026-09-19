@@ -71,7 +71,7 @@ namespace Yijing.Tests
                 }
                 if (allAct || order == 2) Click("choice_act");
                 AssertVisibleTextFits();
-                Click("deliver"); yield return null; Click("confirm_delivery"); yield return null;
+                Click("deliver"); Click("place_cup"); Click("pour_tea"); Click("finish_pour"); yield return null; Click("confirm_delivery"); yield return null;
                 Assert.That(presenter.Session.Snapshot.completedStory, Is.EqualTo(order + 1));
                 AssertVisibleTextFits(); Click("response_continue"); yield return null;
                 if (order == 0) {
@@ -82,16 +82,16 @@ namespace Yijing.Tests
                 yield return null;
             }
             Assert.That(presenter.Session.Today.oracleKey, Is.EqualTo(allAct ? "111_000" : "001_000"));
-            Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(38));
+            Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(24));
             Assert.That(presenter.Session.Snapshot.lampRepaired, Is.True);
             Canvas.ForceUpdateCanvases(); yield return null; AssertVisibleTextFits();
             yield return SceneManager.LoadSceneAsync("Game"); yield return null;
             presenter = UnityEngine.Object.FindFirstObjectByType<GamePresenter>();
-            Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(38));
+            Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(24));
             Assert.That(presenter.Session.Snapshot.completedStory, Is.EqualTo(3));
             Assert.That(presenter.Session.Today.oracleKey, Is.EqualTo(allAct ? "111_000" : "001_000"));
-            Click("help"); AssertVisibleTextFits(); Click("close_modal");
-            Click("order_1"); Click("deliver"); yield return null;
+            Click("room_help"); AssertVisibleTextFits(); Click("close_modal");
+            Click("room_regular"); Click("order_1"); Click("deliver"); yield return null;
             Assert.That(GameObject.Find("replace_request"), Is.Not.Null);
         }
 
@@ -128,10 +128,10 @@ namespace Yijing.Tests
             MakeTierThree("tea"); var original = JsonUtility.ToJson(presenter.Session.Snapshot);
             Click("help"); AssertVisibleTextFits(); Click("practice_from_start");
             Assert.That(presenter.Session.Snapshot.firstMerge, Is.False);
-            Click("close_modal");
+            Click("skip_guide");
             Assert.That(JsonUtility.ToJson(presenter.Session.Snapshot), Is.EqualTo(original));
-            Click("help"); Click("practice_from_start");
-            Click("skip_guide"); Click("produce_tea"); Click("help");
+            Click("room_help"); Click("practice_from_start");
+            Click("intro_next"); Click("intro_next"); Click("produce_tea"); Click("help");
             Assert.That(JsonUtility.ToJson(presenter.Session.Snapshot), Is.EqualTo(original));
             yield return SceneManager.LoadSceneAsync("Game"); yield return null;
             presenter = UnityEngine.Object.FindFirstObjectByType<GamePresenter>();
@@ -148,6 +148,34 @@ namespace Yijing.Tests
             Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(30));
             Assert.That(presenter.Session.Snapshot.guide.undoneOnce, Is.True);
             yield return null;
+        }
+
+
+        [UnityTest] public IEnumerator QuietMomentNeverAwardsOrConsumesAndAlwaysHasAnExit()
+        {
+            MakeTier("tea", 2); var before = JsonUtility.ToJson(presenter.Session.Snapshot);
+            Click("back_to_room"); Click("room_rest");
+            Assert.That(GameObject.Find("Room conversation"), Is.Null);
+            Click("touch_chime"); Click("listen_rain"); yield return new WaitForSecondsRealtime(.2f);
+            Assert.That(JsonUtility.ToJson(presenter.Session.Snapshot), Is.EqualTo(before));
+            Click("leave_rest"); Click("room_prepare");
+            Assert.That(GameObject.Find("Living tea room"), Is.Null);
+        }
+
+        [UnityTest] public IEnumerator TeaRitualIsCancellableAndAutomaticPourCommitsOnlyOnServing()
+        {
+            MakeTier("tea", 2); MakeTier("tea", 2);
+            var before = JsonUtility.ToJson(presenter.Session.Snapshot);
+            Click("deliver"); AssertVisibleTextFits(); Click("place_cup"); Click("cancel_ritual");
+            Assert.That(JsonUtility.ToJson(presenter.Session.Snapshot), Is.EqualTo(before));
+            Click("deliver"); Click("place_cup"); Click("pour_tea");
+            yield return new WaitForSecondsRealtime(2.6f);
+            Assert.That(JsonUtility.ToJson(presenter.Session.Snapshot), Is.EqualTo(before));
+            AssertVisibleTextFits(); Click("confirm_delivery");
+            Assert.That(presenter.Session.Snapshot.completedStory, Is.EqualTo(1));
+            Assert.That(presenter.Session.Snapshot.stones, Is.EqualTo(38));
+            Click("response_rest"); Click("leave_rest");
+            Assert.That(GameObject.Find("response_continue"), Is.Not.Null, "Unread response must survive a quiet moment");
         }
 
         private static void AssertVisibleTextFits()

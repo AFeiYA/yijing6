@@ -73,7 +73,7 @@ namespace Yijing.Presentation
 
         private void AnimateGuide()
         {
-            bool show = Session != null && modal == null && dragFrom < 0 && guideEnabled;
+            bool show = Session != null && modal == null && !RoomVisible && dragFrom < 0 && guideEnabled;
             foreach (var outline in focusOutlines) if (outline != null) {
                 outline.enabled = show;
                 outline.effectColor = new Color(.80f, .54f, .22f, .65f + .25f * Mathf.Sin(Time.unscaledTime * 3));
@@ -99,27 +99,19 @@ namespace Yijing.Presentation
         private void ShowIntroduction(bool replay = false, int replayPage = 0)
         {
             int page = replay ? replayPage : Session.Snapshot.guide.introStep;
-            NewModal(page == 0 ? story.chapterTitle : "雨夜的第一位来客");
-            var closeIntro = modal.Find("close_modal").GetComponent<Button>();
-            closeIntro.gameObject.SetActive(replay || returnSession != null);
-            if (returnSession != null) {
-                closeIntro.GetComponentInChildren<Text>().text = "退出";
-                closeIntro.onClick.RemoveAllListeners(); closeIntro.onClick.AddListener(ExitPractice);
-            }
-            ImageAt(modal, "Opening art", page == 0 ? art.sanctuaryBase : art.elenaPortrait, 130, 172, 280, 260, Color.white, true);
-            Label(modal, page == 0 ? story.premise : story.arrival, 52, 460, 436, 240, 22);
-            ActionButton(modal, "intro_next", page == 0 ? "迎接第一位来客" : "开始备茶", 48, 756, 444, 58, () => {
-                if (!replay) {
-                    var result = Session.AdvanceIntroduction(Session.Snapshot.revision);
-                    if (!result.Success) { Run(result, ""); return; }
-                }
-                CloseModal(); Refresh();
-                if (page == 0) ShowIntroduction(replay, 1);
-            });
-            if (!replay) ActionButton(modal, "skip_guide", "熟悉合成，直接开店", 48, 842, 444, 46, () => {
+            RoomPage(page == 0 ? "隐庐 · 雨夜" : "第一位来客", page == 0 ? story.premise : story.arrival,
+                page == 0 ? "让她进来" : "为她备一席茶", "intro_next", () => {
+                    if (!replay) {
+                        var result = Session.AdvanceIntroduction(Session.Snapshot.revision);
+                        if (!result.Success) { roomBody.text = result.Message; return; }
+                    }
+                    if (page == 0) ShowIntroduction(replay, 1); else OpenTeaBoard();
+                });
+            RoomSecondary("skip_guide", returnSession == null ? "直接开店" : "退出练习", () => {
+                if (returnSession != null) { ExitPractice(); return; }
                 var result = Session.SetGuideSkipped(true, Session.Snapshot.revision);
-                if (result.Success) CloseModal(); Run(result, "已关闭操作指引，可随时从右上角重新打开。");
-            }, 18);
+                if (result.Success) OpenTeaBoard(); else roomBody.text = result.Message;
+            });
         }
 
         private void ShowChoiceTutorial()
@@ -149,55 +141,35 @@ namespace Yijing.Presentation
 
         private void ShowStoryBrief(int index)
         {
-            var beat = story.beats[index]; NewModal(beat.title);
-            ImageAt(modal, "Elena", art.elenaPortrait, 184, 170, 172, 182, Color.white, true);
-            Label(modal, beat.request, 48, 392, 444, 220, 23);
-            Label(modal, "备齐物件 → 交付茶席 → 来客回应\n每次交付都让这一幕向前一步。", 48, 640, 444, 84, 19, Jade);
-            ActionButton(modal, "story_begin", "回茶案，准备这一席", 48, 754, 444, 56, () => { orderSlot = 0; CloseModal(); Refresh(); });
-            if (index == 1 && !Session.Snapshot.guide.undoneOnce)
-                ActionButton(modal, "learn_recovery", "先学整理 · 放回与撤销", 48, 833, 444, 48, () => { CloseModal(); recoveryStage = 0; Refresh(); });
+            var beat = story.beats[index];
+            RoomPage(beat.title, beat.request, "回茶案 · 备这一席", "story_begin", () => { orderSlot = 0; OpenTeaBoard(); });
+            RoomSecondary("brief_rest", "先在这里坐一会儿", EnterQuietMoment);
         }
 
         private void ShowStoryResponse(int completed)
         {
-            var s = Session.Snapshot; var beat = story.beats[completed - 1];
-            string choice = s.storyChoices[completed - 1];
-            NewModal(beat.title + " · 回应");
-            ImageAt(modal, "Elena", art.elenaPortrait, 184, 158, 172, 174, Color.white, true);
-            Label(modal, choice == "act" ? beat.actResponse : choice == "quiet" ? beat.quietResponse : beat.takeaway, 48, 360, 444, 228, 22);
-            Label(modal, "已获得 " + config.orders[completed - 1].rewardStones + " 灵石 · " + (choice == "act" ? "行的回应" : choice == "quiet" ? "静的回应" : "过去的茶席"), 48, 603, 444, 43, 19, Jade);
-            Label(modal, beat.takeaway, 48, 666, 444, 75, 21);
-            Action proceed = () => {
-                if (Session.Snapshot.guide.responsesSeen < completed) {
-                    var result = Session.AcknowledgeStory(completed, Session.Snapshot.revision);
-                    if (!result.Success) { Run(result, ""); return; }
-                }
-                CloseModal(); Refresh();
-                if (completed == 1 && !Session.Snapshot.lampRepaired) ShowSanctuary();
-                else if (completed < 3) ShowStoryBrief(completed);
-                else ShowChapterEnding();
-            };
-            ActionButton(modal, "response_continue", completed == 1 ? "下一步 · 点亮门灯" : completed == 2 ? "下一步 · 为她留茶" : "送她到门口", 48, 784, 444, 58, () => proceed());
-            var close = modal.Find("close_modal").GetComponent<Button>();
-            close.onClick.RemoveAllListeners(); close.onClick.AddListener(() => {
-                if (Session.Snapshot.guide.responsesSeen < completed) {
-                    var result = Session.AcknowledgeStory(completed, Session.Snapshot.revision);
-                    if (!result.Success) { Run(result, ""); return; }
-                }
-                CloseModal(); Refresh();
-            });
+            var s = Session.Snapshot; var beat = story.beats[completed - 1]; var choice = s.storyChoices[completed - 1];
+            RoomPage(beat.title, choice == "act" ? beat.actResponse : choice == "quiet" ? beat.quietResponse : beat.takeaway,
+                completed == 1 && !s.lampRepaired ? "替门边添一盏灯" : completed < 3 ? "听她接着说" : "送她到门口", "response_continue", () => {
+                    if (Session.Snapshot.guide.responsesSeen < completed) {
+                        var result = Session.AcknowledgeStory(completed, Session.Snapshot.revision);
+                        if (!result.Success) { roomBody.text = result.Message; return; }
+                    }
+                    if (completed == 1 && !Session.Snapshot.lampRepaired) ShowSanctuary();
+                    else if (completed < 3) ShowStoryBrief(completed);
+                    else ShowChapterEnding();
+                });
+            roomVisitor.enabled = true;
+            roomCaption.text = "她留下了 " + config.orders[completed - 1].rewardStones + " 灵石谢礼";
+            RoomSecondary("response_rest", "陪她听一会儿雨", EnterQuietMoment);
         }
 
         private void ShowChapterEnding()
         {
-            NewModal("第一幕 · 今晚到这里");
-            Label(modal, story.ending, 48, 178, 444, 260, 22);
-            Label(modal, "这一幕的三次回应\n" + string.Join(" → ", Session.Snapshot.storyChoices.Select(x => x == "quiet" ? "静" : x == "act" ? "行" : "未记录")), 48, 453, 444, 90, 21, Jade);
-            Label(modal, "每日最先交付的三份茶席（含常客），从下往上留爻。静为阴，行为阳；跨日分别记录，不为选择打分。", 48, 570, 444, 119, 20);
-            ActionButton(modal, "ending_continue", Session.Today?.lines.Count == 3 ? "翻开今日卦卡" : "接待常客，续写今日小记", 48, 749, 444, 56, () => {
-                CloseModal(); if (Session.Today?.lines.Count == 3) ShowJournal(); else { orderSlot = 1; Refresh(); }
+            RoomPage("今晚 · 茶还温着", story.ending, "把这一刻留在手账", "ending_continue", () => {
+                if (Session.Today != null) ShowJournal(); else ShowRoomHome();
             });
-            ActionButton(modal, "ending_rest", "今天先到这里 · 进度已保存", 48, 833, 444, 48, () => { CloseModal(); Refresh(); Tell("随时可以回来，茶席会留在这里。"); });
+            RoomSecondary("ending_rest", "再坐一会儿", EnterQuietMoment);
         }
 
         private void ShowRecipe()
@@ -229,7 +201,7 @@ namespace Yijing.Presentation
                 if (Session.Snapshot.completedStory >= 3) ShowChapterEnding(); else ShowStoryBrief(Session.Snapshot.completedStory);
             });
             ActionButton(modal, "help_recipe", "查看物品合成路径", 48, 485, 444, 48, ShowRecipe);
-            ActionButton(modal, "help_recovery", "练习整理 · 回收与撤销", 48, 550, 444, 48, () => { CloseModal(); recoveryStage = 0; Refresh(); });
+            ActionButton(modal, "help_recovery", "练习整理 · 回收与撤销", 48, 550, 444, 48, () => { recoveryStage = 0; OpenTeaBoard(); });
             ActionButton(modal, "toggle_guide", Session.Snapshot.guide.skipped ? "重新开启操作指引" : "关闭操作指引", 48, 615, 444, 48, () => {
                 var result = Session.SetGuideSkipped(!Session.Snapshot.guide.skipped, Session.Snapshot.revision);
                 if (result.Success) CloseModal(); Run(result, "操作指引已更新。");
@@ -240,7 +212,7 @@ namespace Yijing.Presentation
         }
         private void StartPractice()
         {
-            CloseModal(); returnSession = Session;
+            CloseModal(); CancelRoomActivity(); returnSession = Session;
             Session = new GameSession(config, new PracticeStore(), () => DateTimeOffset.Now);
             selected = -1; orderSlot = 0; variantIndex = 0; recoveryStage = -1; includeInventory = false;
             Refresh(); ShowIntroduction();
@@ -248,9 +220,9 @@ namespace Yijing.Presentation
         private void ExitPractice()
         {
             if (returnSession == null) return;
-            CloseModal(); CancelDrag(); Session = returnSession; returnSession = null;
+            CloseModal(); CancelRoomActivity(); CancelDrag(); Session = returnSession; returnSession = null;
             selected = -1; orderSlot = 0; variantIndex = Session.Snapshot.guide.preferredVariant; recoveryStage = -1;
-            Refresh(); Tell("已返回原来的茶案，练习没有改动你的进度。");
+            Refresh(); ShowRoomHome(); ResumeGuidance(); Tell("已返回原来的茶案，练习没有改动你的进度。");
         }
     }
 }

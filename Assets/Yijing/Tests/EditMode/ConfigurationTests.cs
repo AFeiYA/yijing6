@@ -111,7 +111,7 @@ namespace Yijing.Tests
                     Assert.That(wallet, Is.GreaterThanOrEqualTo(0), repair.id);
                 }
             }
-            Assert.That(wallet, Is.EqualTo(266));
+            Assert.That(wallet, Is.EqualTo(252));
         }
     }
 }

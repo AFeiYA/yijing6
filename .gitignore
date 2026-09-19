@@ -39,3 +39,10 @@ sysinfo.txt
 *.cer
 
 # Preserve Unity .meta files and Packages/packages-lock.json.
+
+# The standalone checker is source, not a generated Unity IDE project.
+!/scripts/DomainCheck/DomainCheck.csproj
+
+# Standalone .NET rules-check intermediates
+/scripts/DomainCheck/obj/
+/scripts/DomainCheck/bin/

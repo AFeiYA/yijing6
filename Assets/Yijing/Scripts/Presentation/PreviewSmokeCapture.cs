@@ -52,13 +52,16 @@ namespace Yijing.Presentation
                 if (order == 0) yield return Capture("tea-table-ready.png");
                 Click("deliver"); yield return null;
                 if (order == 0) yield return Capture("delivery.png");
-                Click("confirm_delivery"); yield return null;
+                Click("place_cup"); Click("pour_tea");
+                if (order == 0) yield return Capture("pouring-tea.png");
+                Click("finish_pour"); Click("confirm_delivery"); yield return null;
                 yield return Capture("story-response-" + order + ".png"); Click("response_continue"); yield return null;
                 if (order == 0) { yield return Capture("lamp-story.png"); Click("repair_lamp"); yield return null; Click("lamp_continue"); }
                 if (order < 2) Click("story_begin");
                 else { yield return Capture("chapter-ending.png"); Click("ending_continue"); }
             }
-            yield return Capture("oracle-qian-15.png");
+            yield return Capture("oracle-qian-15.png"); Click("close_modal");
+            Click("ending_rest"); yield return Capture("stay-a-minute.png");
             File.WriteAllText(Path.Combine(Output, "smoke-result.txt"), "orders=" + presenter.Session.Snapshot.completedStory + "\noracle=" + presenter.Session.Today.oracleKey);
             UnityEngine.Application.Quit(0);
         }

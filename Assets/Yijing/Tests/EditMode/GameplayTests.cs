@@ -128,13 +128,13 @@ namespace Yijing.Tests
         }
         [Test] public void DeliveryIsAtomicAndCannotReplayOrderOrCommand()
         {
-            Seed("tea_03", "tea_03"); var order = game.Order(0); var ids = game.SelectMaterials(order.variants[0], false);
+            Seed("tea_02", "tea_02"); var order = game.Order(0); var ids = game.SelectMaterials(order.variants[0], false);
             long rev = Rev; OK(game.Deliver(0, "E01", "quiet", ids, false, "once", rev));
-            Assert.That(game.Snapshot.stones, Is.EqualTo(46)); Assert.That(game.Today.lines, Is.EqualTo(new[] { 0 }));
+            Assert.That(game.Snapshot.stones, Is.EqualTo(38)); Assert.That(game.Today.lines, Is.EqualTo(new[] { 0 }));
             Assert.That(game.Deliver(0, "E01", "quiet", ids, false, "once", rev).Success, Is.False);
-            Seed("tea_03", "tea_03");
+            Seed("tea_02", "tea_02");
             Assert.That(game.Deliver(0, "E02", "quiet", game.SelectMaterials(game.Order(0).variants[0], false), false, "once", Rev).Success, Is.False);
-            Assert.That(game.Snapshot.stones, Is.EqualTo(46));
+            Assert.That(game.Snapshot.stones, Is.EqualTo(38));
         }
         [Test] public void HigherTierAndDuplicateMaterialIdsAreRejected()
         {
@@ -146,7 +146,7 @@ namespace Yijing.Tests
         }
         [Test] public void StorageOnlySuppliesOrderWithExplicitOptIn()
         {
-            Seed("tea_03", "tea_03"); OK(game.Store(1, game.Snapshot.board[1].instanceId, Rev));
+            Seed("tea_02", "tea_02"); OK(game.Store(1, game.Snapshot.board[1].instanceId, Rev));
             var variant = game.Order(0).variants[0]; Assert.That(game.SelectMaterials(variant, false), Is.Null);
             var ids = game.SelectMaterials(variant, true);
             Assert.That(game.Deliver(0, "E01", "quiet", ids, false, "denied", Rev).Success, Is.False);
@@ -156,19 +156,19 @@ namespace Yijing.Tests
         [Test] public void SaveFailureRollsBackProductionDeliveryAndLamp()
         {
             store.fail = true; Assert.That(game.Produce("tea", Rev).Success, Is.False); Assert.That(Rev, Is.Zero);
-            store.fail = false; Seed("tea_03", "tea_03"); store.fail = true;
+            store.fail = false; Seed("tea_02", "tea_02"); store.fail = true;
             Assert.That(game.Deliver(0, "E01", "quiet", game.SelectMaterials(game.Order(0).variants[0], false), false, "retry", Rev).Success, Is.False);
             Assert.That(game.Snapshot.stones, Is.EqualTo(30)); Assert.That(game.Today, Is.Null);
             store.fail = false; Deliver(); store.fail = true;
             Assert.That(game.RepairLamp("lamp", Rev).Success, Is.False);
-            Assert.That(game.Snapshot.lampRepaired, Is.False); Assert.That(game.Snapshot.stones, Is.EqualTo(46));
-            store.fail = false; OK(game.RepairLamp("lamp", Rev)); Assert.That(game.Snapshot.stones, Is.EqualTo(6));
+            Assert.That(game.Snapshot.lampRepaired, Is.False); Assert.That(game.Snapshot.stones, Is.EqualTo(38));
+            store.fail = false; OK(game.RepairLamp("lamp", Rev)); Assert.That(game.Snapshot.stones, Is.EqualTo(8));
         }
         [Test] public void LampRequiresFirstStoryOrderAndCannotDoubleCharge()
         {
             Assert.That(game.RepairLamp("early", Rev).Success, Is.False); Deliver();
             OK(game.RepairLamp("lamp", Rev)); Assert.That(game.RepairLamp("again", Rev).Success, Is.False);
-            Assert.That(game.Snapshot.stones, Is.EqualTo(6));
+            Assert.That(game.Snapshot.stones, Is.EqualTo(8));
         }
         [Test] public void QuietQuietActCreatesQian15AndFourthDeliveryDoesNotOverwrite()
         {
@@ -247,7 +247,7 @@ namespace Yijing.Tests
             Deliver(); OK(game.RepairLamp("lamp", Rev)); OK(game.ChooseResponse(0, Rev));
             Seed("tea_02", "tea_02");
             Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("produce_ceramic"));
-            Seed("tea_02", "tea_02", "ceramic_03"); OK(game.Store(2, game.Snapshot.board[2].instanceId, Rev));
+            Seed("tea_02", "tea_02", "ceramic_02"); OK(game.Store(2, game.Snapshot.board[2].instanceId, Rev));
             Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("inventory"));
             Seed(Enumerable.Repeat("ceramic_05", 42).ToArray());
             Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("cell"));
@@ -287,14 +287,14 @@ namespace Yijing.Tests
             Assert.That(game.Snapshot.guide.responsesSeen, Is.Zero);
             OK(game.AcknowledgeStory(1, Rev)); Reopen();
             Assert.That(game.Snapshot.guide.responsesSeen, Is.EqualTo(1));
-            Assert.That(game.AcknowledgeStory(1, Rev).Success, Is.False); Assert.That(game.Snapshot.stones, Is.EqualTo(46));
+            Assert.That(game.AcknowledgeStory(1, Rev).Success, Is.False); Assert.That(game.Snapshot.stones, Is.EqualTo(38));
         }
 
         [Serializable] private sealed class LegacyEnvelope { public string payload, sha256; }
         [Test] public void VersionOneSaveUpgradesWithoutLosingProgressOrInventingChoices()
         {
             Deliver(); Deliver(); Deliver(1); Seed("tea_04");
-            var legacy = game.Snapshot; legacy.schemaVersion = 1;
+            var legacy = game.Snapshot; legacy.schemaVersion = 1; legacy.stones = 38; // Preserve an actual 0.2-era balance unchanged.
             string payload = JsonUtility.ToJson(legacy);
             payload = payload.Substring(0, payload.IndexOf(",\"guide\":", StringComparison.Ordinal)) + "}";
             string hash;

@@ -6,7 +6,8 @@
 
 - Unity **6.6 / 6000.6.0f1**，C#、URP 2D、Input System、uGUI。
 - 当前阶段：M1／M2 首段可玩版。已串通前三单、两条合成链、储物／回收、门灯、每日卦卡与本地存档；完整序章仍在开发。
-- 0.3.0 新增开场故事、渐进引导、实时下一步目标、合成路径、三单六段分支回应和独立练习。既有存档会兼容升级。
+- 0.4.0 改为茶舍主画面、场景对白、半量备料、放杯倒茶和自由听雨；保留引导与独立练习。参见 [多待一分钟](docs/CALM_EXPERIENCE.md)。
+- 当前限制：Unity 本机授权未恢复；新代码已编译、独立规则检查通过，播放模式、声音画面和新 app 构建待完成。现有 app 为 0.3.0。
 - 项目根目录就是 Unity 工程目录，包含 `Assets`、`Packages`、`ProjectSettings`。
 - [GDD v2.0](docs/Yijing_Unity_GDD_v2.0.md) 规定玩法；[工程决策](docs/ENGINE_DECISION.md) 覆盖其中第 14.1 节的旧引擎版本建议。
 
@@ -15,7 +16,7 @@
 1. Unity Hub → Add → Add project from disk，选择此仓库根目录。
 2. 指定 **6000.6.0f1**，等待包还原和资源导入。
 3. 打开 `Assets/Yijing/Scenes/Bootstrap.unity`，点击 Play。
-4. 配置通过校验后进入茶案。点击茶台生成物品，拖动相同物品合成；也可依次点击来源格和目标格。完成第一次合成后开放器架与静／行选择。
+4. 配置通过校验后进入茶舍，跟随开场或点击“为她备一席茶”进入茶案。点击茶台生成物品，拖动相同物品合成；也可依次点击来源格和目标格。完成第一次合成后开放器架与静／行选择。
 
 首轮试玩步骤和预期结果见 [试玩说明](docs/PLAYTEST_M1.md)。Game 场景已经装配好；重新装配可使用 **Yijing → Playable → Prepare Scene**。macOS 试玩包可通过 **Yijing → Playable → Build macOS Preview** 构建至 `Artifacts/Build/Yijing.app`。
 
@@ -40,6 +41,8 @@ bash scripts/unity-check.sh playmode
 ```
 
 其他安装路径通过 `YIJING_UNITY_EDITOR` 指定。报告位于 `Artifacts/`，不提交。编辑器内也可使用 Test Runner。Domain 程序集禁止引用 UnityEngine，便于规则独立验证。
+
+无需 Unity 播放模式的规则检查（需要 .NET 8 SDK）可以运行 `dotnet run --project scripts/DomainCheck/DomainCheck.csproj -- .`，覆盖八种首幕路线、资金可达性、失败回滚和旧余额。它不替代 Unity 序列化、触控、画面和声音验收。
 
 ## 目录
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562fcf27ba89c4bea8363a8c403fc084, type: 3}
   m_Name: PrototypeConfig
   m_EditorClassIdentifier: Yijing.Infrastructure::Yijing.Infrastructure.PrototypeConfigAsset
-  sourceSha256: 4669271976fb54131fac1f21bfcbb5ce6b5867dd9ec93ccad15e0d9b9555fbe2
+  sourceSha256: 40e7c71ad65a46350e28d21b6aaa504040c8714dbb8bf47b8d671851da0cc1e0
   config:
     schemaVersion: 1
     contentVersion: prototype-2.0
@@ -105,53 +105,53 @@ MonoBehaviour:
     orders:
     - id: E01
       storyNode: elena_01
-      rewardStones: 16
-      variants:
-      - id: quiet
-        lineValue: 0
-        requirements:
-        - itemId: tea_03
-          quantity: 2
-      - id: act
-        lineValue: 1
-        requirements:
-        - itemId: tea_03
-          quantity: 1
-        - itemId: ceramic_03
-          quantity: 1
-    - id: E02
-      storyNode: elena_01
-      rewardStones: 16
+      rewardStones: 8
       variants:
       - id: quiet
         lineValue: 0
         requirements:
         - itemId: tea_02
           quantity: 2
-        - itemId: ceramic_03
+      - id: act
+        lineValue: 1
+        requirements:
+        - itemId: tea_02
+          quantity: 1
+        - itemId: ceramic_02
+          quantity: 1
+    - id: E02
+      storyNode: elena_01
+      rewardStones: 8
+      variants:
+      - id: quiet
+        lineValue: 0
+        requirements:
+        - itemId: tea_02
+          quantity: 1
+        - itemId: ceramic_02
           quantity: 1
       - id: act
         lineValue: 1
         requirements:
-        - itemId: tea_03
-          quantity: 1
-        - itemId: ceramic_02
+        - itemId: tea_01
           quantity: 2
+        - itemId: ceramic_02
+          quantity: 1
     - id: E03
       storyNode: elena_01
-      rewardStones: 16
+      rewardStones: 8
       variants:
       - id: quiet
         lineValue: 0
         requirements:
         - itemId: tea_03
-          quantity: 2
+          quantity: 1
       - id: act
         lineValue: 1
         requirements:
-        - itemId: tea_03
+        - itemId: tea_02
           quantity: 1
-        - itemId: ceramic_03
+        - itemId: ceramic_02
           quantity: 1
     - id: E04
       storyNode: elena_02
@@ -461,7 +461,7 @@ MonoBehaviour:
     - id: lamp
       requiredAfterOrder: E01
       prerequisiteRenovation: 
-      cost: 40
+      cost: 30
       unlocksBoardRow: 0
       mandatory: 1
     - id: desk
