@@ -156,8 +156,12 @@
           "lineValue": 0,
           "requirements": [
             {
-              "itemId": "tea_03",
+              "itemId": "tea_02",
               "quantity": 2
+            },
+            {
+              "itemId": "ceramic_03",
+              "quantity": 1
             }
           ]
         },
@@ -170,8 +174,8 @@
               "quantity": 1
             },
             {
-              "itemId": "ceramic_03",
-              "quantity": 1
+              "itemId": "ceramic_02",
+              "quantity": 2
             }
           ]
         }

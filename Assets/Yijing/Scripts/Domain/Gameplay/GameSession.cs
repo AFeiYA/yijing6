@@ -24,6 +24,7 @@ namespace Yijing.Domain.Gameplay
             this.config = config; this.store = store; this.clock = clock;
             ConfigValidator.Validate(config);
             state = store.Load();
+            if (state != null) state.UpgradeLegacy();
             if (state == null) { state = GameState.New(config); state.Validate(config); store.Save(state); }
             state.Validate(config);
         }
@@ -32,7 +33,7 @@ namespace Yijing.Domain.Gameplay
         public DailyRecord Today => state.days.FirstOrDefault(x => x.date == clock().ToString("yyyy-MM-dd"))?.Copy();
         public OracleCardConfig Card(DailyRecord day) => day == null ? null : config.oracleCards.FirstOrDefault(x => x.key == day.oracleKey);
 
-        private ActionResult Commit(long expected, Func<GameState, string> change, bool recycling = false, string commandId = null)
+        private ActionResult Commit(long expected, Func<GameState, string> change, bool recycling = false, string commandId = null, bool preserveUndo = false)
         {
             if (expected != state.revision) return new ActionResult(false, "茶案已经变化，请再试一次。");
             if (commandId != null && state.recentCommands.Contains(commandId)) return new ActionResult(false, "这次操作已经完成。");
@@ -49,7 +50,7 @@ namespace Yijing.Domain.Gameplay
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException) {
                 return new ActionResult(false, "保存失败，未扣物品或发奖。请检查空间后重试。");
             }
-            undoRecycle = recycling ? state.Copy() : null;
+            if (!preserveUndo) undoRecycle = recycling ? state.Copy() : null;
             state = candidate;
             return new ActionResult(true, "已保存");
         }
@@ -96,7 +97,7 @@ namespace Yijing.Domain.Gameplay
             if (index < 0 || index >= (inventory ? slots.Length : OpenSlots) || slots[index].Empty || slots[index].instanceId != instanceId) return "先选中要放回的物品。";
             var item = Item(slots[index].itemId);
             if (item.chainId == "tea") s.teaReserve += item.baseUnits; else s.ceramicReserve += item.baseUnits;
-            slots[index] = new ItemSlot(); return null;
+            slots[index] = new ItemSlot(); s.guide.recycledOnce = true; return null;
         }, true);
 
         public ActionResult Undo(long revision)
@@ -107,6 +108,7 @@ namespace Yijing.Domain.Gameplay
                 s.board = previous.board.Select(x => x.Copy()).ToArray();
                 s.inventory = previous.inventory.Select(x => x.Copy()).ToArray();
                 s.teaReserve = previous.teaReserve; s.ceramicReserve = previous.ceramicReserve;
+                s.guide.undoneOnce = true;
                 return null;
             });
         }
@@ -156,6 +158,7 @@ namespace Yijing.Domain.Gameplay
             if (!s.firstMerge) return "先完成第一次合成。";
             var order = Order(slot);
             if (order == null || order.id != orderId) return "这份请求已经完成或更换。";
+            if (slot == 0 && s.completedStory == 1 && !s.lampRepaired) return "先点亮门边灯，再陪 Elena 整理窗边的茶席。";
             var variant = order.variants.FirstOrDefault(x => x.id == variantId);
             if (variant == null || materialIds == null || materialIds.Distinct().Count() != materialIds.Length || string.IsNullOrEmpty(commandId)) return "交付清单无效。";
             var available = s.board.Take(OpenSlots).Concat(includeInventory ? s.inventory : Array.Empty<ItemSlot>()).Where(x => !x.Empty).ToArray();
@@ -164,7 +167,8 @@ namespace Yijing.Domain.Gameplay
                 variant.requirements.Any(r => selected.Count(x => x.itemId == r.itemId) != r.quantity)) return "材料尚未齐备，高阶物品不会自动代替低阶。";
             foreach (var item in selected) { item.itemId = ""; item.instanceId = 0; }
             s.stones += order.rewardStones;
-            if (slot == 0) s.completedStory++; else s.regularOrders[slot - 1] = s.nextRegularOrder++;
+            if (slot == 0) { s.storyChoices[s.completedStory] = variant.id; s.completedStory++; }
+            else s.regularOrders[slot - 1] = s.nextRegularOrder++;
             var now = clock(); string date = now.ToString("yyyy-MM-dd");
             var day = s.days.FirstOrDefault(x => x.date == date);
             if (day == null) { day = new DailyRecord { date = date, utcOffsetMinutes = (int)now.Offset.TotalMinutes, upperBits = config.rules.prototypeUpperBits }; s.days.Add(day); }
@@ -183,5 +187,31 @@ namespace Yijing.Domain.Gameplay
             if (string.IsNullOrEmpty(commandId)) return "操作标记无效。";
             s.stones -= repair.cost; s.lampRepaired = true; return null;
         }, commandId: commandId);
+
+        public ActionResult AdvanceIntroduction(long revision) => Commit(revision, s => {
+            if (s.guide.introStep >= 2) return "开场已经读完。";
+            s.guide.introStep++; return null;
+        }, preserveUndo: true);
+
+        public ActionResult ExplainChoice(long revision) => Commit(revision, s => {
+            if (!s.firstMerge) return "先试着把两撮茶合在一起。";
+            s.guide.choiceExplained = true; return null;
+        }, preserveUndo: true);
+
+        public ActionResult ChooseResponse(int variant, long revision) => Commit(revision, s => {
+            if (!s.firstMerge || variant < 0 || variant > 1) return "先完成第一次合成。";
+            s.guide.hasChosen = true; s.guide.preferredVariant = variant; return null;
+        }, preserveUndo: true);
+
+        public ActionResult SetGuideSkipped(bool skipped, long revision) => Commit(revision, s => {
+            s.guide.skipped = skipped;
+            if (skipped) s.guide.introStep = 2;
+            return null;
+        }, preserveUndo: true);
+
+        public ActionResult AcknowledgeStory(int completed, long revision) => Commit(revision, s => {
+            if (completed <= s.guide.responsesSeen || completed > s.completedStory) return "这段回应已经读完。";
+            s.guide.responsesSeen = completed; return null;
+        }, preserveUndo: true);
     }
 }

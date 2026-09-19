@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562fcf27ba89c4bea8363a8c403fc084, type: 3}
   m_Name: PrototypeConfig
   m_EditorClassIdentifier: Yijing.Infrastructure::Yijing.Infrastructure.PrototypeConfigAsset
-  sourceSha256: b362fc854be8bf06a7653b60ed27925dbf30fe033132d46108eaf41ba160a204
+  sourceSha256: 4669271976fb54131fac1f21bfcbb5ce6b5867dd9ec93ccad15e0d9b9555fbe2
   config:
     schemaVersion: 1
     contentVersion: prototype-2.0
@@ -126,15 +126,17 @@ MonoBehaviour:
       - id: quiet
         lineValue: 0
         requirements:
-        - itemId: tea_03
+        - itemId: tea_02
           quantity: 2
+        - itemId: ceramic_03
+          quantity: 1
       - id: act
         lineValue: 1
         requirements:
         - itemId: tea_03
           quantity: 1
-        - itemId: ceramic_03
-          quantity: 1
+        - itemId: ceramic_02
+          quantity: 2
     - id: E03
       storyNode: elena_01
       rewardStones: 16

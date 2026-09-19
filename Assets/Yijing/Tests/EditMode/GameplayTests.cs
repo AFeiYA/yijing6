@@ -48,6 +48,8 @@ namespace Yijing.Tests
         }
         private void Deliver(int variant = 0, int slot = 0)
         {
+            if (slot == 0 && game.Snapshot.completedStory == 1 && !game.Snapshot.lampRepaired)
+                OK(game.RepairLamp(Guid.NewGuid().ToString(), Rev));
             var order = game.Order(slot); var choice = order.variants[variant];
             Seed(choice.requirements.SelectMany(r => Enumerable.Repeat(r.itemId, r.quantity)).ToArray());
             OK(game.Deliver(slot, order.id, choice.id, game.SelectMaterials(choice, false), false, Guid.NewGuid().ToString(), Rev));
@@ -200,7 +202,7 @@ namespace Yijing.Tests
         }
         [Test] public void JsonRoundTripPreservesEmptySlotsAndDailyState()
         {
-            Deliver(); Deliver(); Deliver(1); OK(game.RepairLamp("lamp", Rev));
+            Deliver(); Deliver(); Deliver(1);
             string path = Path.Combine(directory, "save.json"); var repo = new JsonGameStore(path, config);
             repo.Save(game.Snapshot); var loaded = new JsonGameStore(path, config).Load();
             Assert.That(JsonUtility.ToJson(loaded), Is.EqualTo(JsonUtility.ToJson(game.Snapshot)));
@@ -229,6 +231,88 @@ namespace Yijing.Tests
             Seed("tea_01", "tea_01"); var s = game.Snapshot;
             s.board[0].itemId = "future_item"; Assert.Throws<InvalidDataException>(() => s.Validate(config));
             s = game.Snapshot; s.board[1].instanceId = s.board[0].instanceId; Assert.Throws<InvalidDataException>(() => s.Validate(config));
+        }
+
+        [Test] public void GuideFindsMovedTeachingItemsInsteadOfFixedCoordinates()
+        {
+            Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("produce_tea"));
+            Produce(); Produce(); Move(0, 9);
+            var cue = GuideDirector.Next(game, game.Order(0), 0);
+            Assert.That(cue.target, Is.EqualTo("merge"));
+            Assert.That(new[] { cue.from, cue.to }, Is.EquivalentTo(new[] { 1, 9 }));
+        }
+
+        [Test] public void GuideSelectsMissingChainStorageAndSafeFullBoardRecovery()
+        {
+            Deliver(); OK(game.RepairLamp("lamp", Rev)); OK(game.ChooseResponse(0, Rev));
+            Seed("tea_02", "tea_02");
+            Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("produce_ceramic"));
+            Seed("tea_02", "tea_02", "ceramic_03"); OK(game.Store(2, game.Snapshot.board[2].instanceId, Rev));
+            Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("inventory"));
+            Seed(Enumerable.Repeat("ceramic_05", 42).ToArray());
+            Assert.That(GuideDirector.Next(game, game.Order(0), 0).target, Is.EqualTo("cell"));
+        }
+
+        [Test] public void StoryTwoRequiresLampWithoutConsumingPreparedItems()
+        {
+            Deliver(); var second = game.Order(0);
+            Seed(second.variants[0].requirements.SelectMany(x => Enumerable.Repeat(x.itemId, x.quantity)).ToArray());
+            var before = JsonUtility.ToJson(game.Snapshot);
+            var result = game.Deliver(0, "E02", "quiet", game.SelectMaterials(second.variants[0], false), false, "blocked", Rev);
+            Assert.That(result.Success, Is.False); Assert.That(JsonUtility.ToJson(game.Snapshot), Is.EqualTo(before));
+            Assert.That(GuideDirector.Next(game, second, 0).target, Is.EqualTo("sanctuary"));
+        }
+
+        [Test] public void IntroductionAndChoiceAcknowledgementPersistAndDoNotAwardResources()
+        {
+            OK(game.AdvanceIntroduction(Rev)); Reopen(); Assert.That(game.Snapshot.guide.introStep, Is.EqualTo(1));
+            OK(game.AdvanceIntroduction(Rev)); Produce(); Produce(); Move(0, 1);
+            OK(game.ExplainChoice(Rev)); OK(game.ChooseResponse(1, Rev)); Reopen();
+            Assert.That(game.Snapshot.guide.choiceExplained, Is.True); Assert.That(game.Snapshot.guide.preferredVariant, Is.EqualTo(1));
+            Assert.That(game.Snapshot.stones, Is.EqualTo(30)); Assert.That(TotalUnits(game.Snapshot), Is.EqualTo(2));
+        }
+
+        [Test] public void GuideAcknowledgementsRollBackOnSaveFailureAndPreserveUndo()
+        {
+            store.fail = true; Assert.That(game.AdvanceIntroduction(Rev).Success, Is.False);
+            Assert.That(game.Snapshot.guide.introStep, Is.Zero); store.fail = false;
+            Seed("tea_02"); OK(game.Recycle(0, false, game.Snapshot.board[0].instanceId, Rev));
+            OK(game.SetGuideSkipped(true, Rev)); Assert.That(game.CanUndo, Is.True); OK(game.Undo(Rev));
+            Assert.That(game.Snapshot.guide.undoneOnce, Is.True); Assert.That(TotalUnits(game.Snapshot), Is.EqualTo(2));
+        }
+
+        [Test] public void UnreadStoryResponseSurvivesReloadWithActualChoice()
+        {
+            Deliver(1); Reopen(); Assert.That(game.Snapshot.storyChoices[0], Is.EqualTo("act"));
+            Assert.That(game.Snapshot.guide.responsesSeen, Is.Zero);
+            OK(game.AcknowledgeStory(1, Rev)); Reopen();
+            Assert.That(game.Snapshot.guide.responsesSeen, Is.EqualTo(1));
+            Assert.That(game.AcknowledgeStory(1, Rev).Success, Is.False); Assert.That(game.Snapshot.stones, Is.EqualTo(46));
+        }
+
+        [Serializable] private sealed class LegacyEnvelope { public string payload, sha256; }
+        [Test] public void VersionOneSaveUpgradesWithoutLosingProgressOrInventingChoices()
+        {
+            Deliver(); Deliver(); Deliver(1); Seed("tea_04");
+            var legacy = game.Snapshot; legacy.schemaVersion = 1;
+            string payload = JsonUtility.ToJson(legacy);
+            payload = payload.Substring(0, payload.IndexOf(",\"guide\":", StringComparison.Ordinal)) + "}";
+            string hash;
+            using (var sha = System.Security.Cryptography.SHA256.Create()) hash = BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(payload))).Replace("-", "");
+            Directory.CreateDirectory(directory); string path = Path.Combine(directory, "save.json");
+            File.WriteAllText(path, JsonUtility.ToJson(new LegacyEnvelope { payload = payload, sha256 = hash }));
+            string oldFile = File.ReadAllText(path); var repository = new JsonGameStore(path, config); var restored = repository.Load();
+            Assert.That(restored.schemaVersion, Is.EqualTo(2)); Assert.That(restored.stones, Is.EqualTo(38));
+            Assert.That(restored.board[0].itemId, Is.EqualTo("tea_04")); Assert.That(restored.days.Single().oracleKey, Is.EqualTo("001_000"));
+            Assert.That(restored.guide.responsesSeen, Is.EqualTo(3)); Assert.That(restored.storyChoices, Is.EqualTo(new[] { "", "", "" }));
+            repository.Save(restored); Assert.That(File.ReadAllText(path + ".bak"), Is.EqualTo(oldFile));
+        }
+
+        [Test] public void StoryContentCoversEachPlayableOrderWithDistinctResponses()
+        {
+            var book = JsonUtility.FromJson<StoryBook>(File.ReadAllText(Path.Combine(UnityEngine.Application.dataPath, "Yijing/Data/FirstSessionStory.json")));
+            book.Validate(); Assert.That(book.beats.Select(x => x.quietResponse).Distinct().Count(), Is.EqualTo(3));
+            Assert.That(book.beats.All(x => x.quietResponse != x.actResponse), Is.True);
         }
     }
 }

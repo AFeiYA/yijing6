@@ -7,6 +7,13 @@ using Yijing.Domain.Configuration;
 namespace Yijing.Domain.Gameplay
 {
     [Serializable]
+    public sealed class GuideProgress
+    {
+        public int introStep, responsesSeen, preferredVariant;
+        public bool choiceExplained, hasChosen, skipped, recycledOnce, undoneOnce;
+        public GuideProgress Copy() => (GuideProgress)MemberwiseClone();
+    }
+    [Serializable]
     public sealed class ItemSlot
     {
         public long instanceId;
@@ -28,7 +35,7 @@ namespace Yijing.Domain.Gameplay
     [Serializable]
     public sealed class GameState
     {
-        public int schemaVersion = 1;
+        public int schemaVersion = 2;
         public string contentVersion;
         public long revision, nextInstanceId = 1;
         public ItemSlot[] board, inventory;
@@ -38,6 +45,17 @@ namespace Yijing.Domain.Gameplay
         public int nextRegularOrder = 2;
         public List<string> recentCommands = new List<string>();
         public List<DailyRecord> days = new List<DailyRecord>();
+        public GuideProgress guide = new GuideProgress();
+        public string[] storyChoices = { "", "", "" };
+
+        public bool UpgradeLegacy()
+        {
+            if (schemaVersion != 1) return false;
+            // Old progress remains authoritative. Do not invent past story choices from daily lines.
+            guide = new GuideProgress { introStep = firstMerge || completedStory > 0 ? 2 : 0,
+                choiceExplained = firstMerge, hasChosen = firstMerge, responsesSeen = completedStory };
+            storyChoices = new[] { "", "", "" }; schemaVersion = 2; return true;
+        }
 
         public static GameState New(PrototypeConfig config) => new GameState {
             contentVersion = config.contentVersion, stones = config.rules.initialStones,
@@ -52,13 +70,19 @@ namespace Yijing.Domain.Gameplay
             teaReserve = teaReserve, ceramicReserve = ceramicReserve, completedStory = completedStory,
             firstMerge = firstMerge, lampRepaired = lampRepaired,
             regularOrders = (int[])regularOrders.Clone(), nextRegularOrder = nextRegularOrder,
-            recentCommands = new List<string>(recentCommands), days = days.Select(x => x.Copy()).ToList()
+            recentCommands = new List<string>(recentCommands), days = days.Select(x => x.Copy()).ToList(),
+            guide = guide.Copy(), storyChoices = (string[])storyChoices.Clone()
         };
 
         public void Validate(PrototypeConfig config)
         {
             void Require(bool valid, string reason) { if (!valid) throw new InvalidDataException(reason); }
-            Require(schemaVersion == 1 && contentVersion == config.contentVersion, "Unsupported save version; original files are preserved.");
+            Require(schemaVersion == 2 && contentVersion == config.contentVersion, "Unsupported save version; original files are preserved.");
+            Require(guide != null && guide.introStep >= 0 && guide.introStep <= 2 && guide.responsesSeen >= 0 &&
+                guide.responsesSeen <= completedStory && guide.preferredVariant >= 0 && guide.preferredVariant <= 1, "Invalid guide progress.");
+            Require(storyChoices != null && storyChoices.Length == GameSession.StoryOrderLimit &&
+                storyChoices.All(x => x == "" || x == "quiet" || x == "act") &&
+                storyChoices.Skip(completedStory).All(string.IsNullOrEmpty), "Invalid story choices.");
             Require(board != null && board.Length == config.rules.columns * config.rules.rows &&
                 inventory != null && inventory.Length == config.rules.initialInventorySlots, "Invalid storage size.");
             Require(revision >= 0 && nextInstanceId > 0 && stones >= 0 && teaReserve >= 0 && ceramicReserve >= 0 &&

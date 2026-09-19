@@ -59,6 +59,7 @@ namespace Yijing.Infrastructure
                 throw new InvalidDataException("Save checksum mismatch.");
             var state = JsonUtility.FromJson<GameState>(envelope.payload);
             if (state == null) throw new InvalidDataException("Missing save state.");
+            state.UpgradeLegacy();
             state.Validate(config); return state;
         }
 

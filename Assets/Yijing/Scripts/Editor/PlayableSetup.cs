@@ -23,13 +23,16 @@ namespace Yijing.Editor
             serialized.FindProperty("configuration").objectReferenceValue = AssetDatabase.LoadAssetAtPath<PrototypeConfigAsset>(ProjectSetup.ConfigAssetPath);
             serialized.FindProperty("art").objectReferenceValue = AssetDatabase.LoadAssetAtPath<ArtCatalog>("Assets/Yijing/Data/ArtCatalog.asset");
             serialized.FindProperty("font").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Font>("Assets/Yijing/Fonts/NotoSansSC-Regular.otf");
-            foreach (var name in new[] { "configuration", "art", "font" })
+            serialized.FindProperty("storyContent").objectReferenceValue = AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Yijing/Data/FirstSessionStory.json");
+            foreach (var name in new[] { "configuration", "art", "font", "storyContent" })
                 if (serialized.FindProperty(name).objectReferenceValue == null) throw new InvalidOperationException("Missing playable dependency: " + name);
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
             Debug.Log("Yijing playable tea loop prepared: open Bootstrap or Game and press Play.");
         }
+
+        public static void PrepareStoryUpdate() { ProjectSetup.ImportConfiguration(); PrepareScene(); }
 
         [MenuItem("Yijing/Playable/Build macOS Preview")]
         public static void BuildMacPreview()

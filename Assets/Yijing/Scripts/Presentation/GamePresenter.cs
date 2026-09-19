@@ -13,11 +13,12 @@ using Yijing.Infrastructure;
 
 namespace Yijing.Presentation
 {
-    public sealed class GamePresenter : MonoBehaviour
+    public sealed partial class GamePresenter : MonoBehaviour
     {
         [SerializeField] private PrototypeConfigAsset configuration;
         [SerializeField] private ArtCatalog art;
         [SerializeField] private Font font;
+        [SerializeField] private TextAsset storyContent;
         public GameSession Session { get; private set; }
 #if UNITY_EDITOR
         public static string SavePathForTesting;
@@ -42,8 +43,9 @@ namespace Yijing.Presentation
         {
             BuildCanvas();
             try {
-                if (configuration == null || art == null || font == null) throw new InvalidDataException("游戏资源尚未装配，请运行 Yijing > Playable > Prepare Scene。");
+                if (configuration == null || art == null || font == null || storyContent == null) throw new InvalidDataException("游戏资源尚未装配，请运行 Yijing > Playable > Prepare Scene。");
                 config = configuration.CreateSnapshot();
+                story = JsonUtility.FromJson<StoryBook>(storyContent.text); story.Validate();
                 string path = Path.Combine(UnityEngine.Application.persistentDataPath, "tea-room-v1.json");
 #if DEVELOPMENT_BUILD
                 if (PreviewSmokeCapture.Enabled) path = PreviewSmokeCapture.IsolatedSavePath;
@@ -53,8 +55,10 @@ namespace Yijing.Presentation
 #endif
                 var repository = new JsonGameStore(path, config);
                 Session = new GameSession(config, repository, () => DateTimeOffset.Now);
+                variantIndex = Session.Snapshot.guide.preferredVariant;
                 BuildTeaTable(); Refresh();
                 Tell(repository.RecoveryNotice ?? (Session.Snapshot.firstMerge ? "茶席已恢复，按自己的节奏继续。" : "取两撮山茶，拖到一起，开始今天的茶席。"));
+                ResumeGuidance();
             } catch (Exception e) {
                 Debug.LogError("Yijing could not start: " + e.Message);
                 Label(root, "暂时无法打开茶舍", 36, 180, 468, 60, 28);
@@ -79,6 +83,7 @@ namespace Yijing.Presentation
         private void Update()
         {
             if (root != null) FitSafeArea();
+            AnimateGuide();
             if (Session != null && lastDate != DateTimeOffset.Now.ToString("yyyy-MM-dd")) {
                 lastDate = DateTimeOffset.Now.ToString("yyyy-MM-dd"); Refresh();
             }
@@ -96,18 +101,23 @@ namespace Yijing.Presentation
         {
             Panel(root, "Header shade", 0, 0, 540, 62, new Color(.10f, .20f, .18f, .76f));
             Label(root, "易 · 境", 26, 6, 220, 50, 29, Color.white);
-            wallet = Label(root, "", 280, 19, 234, 32, 19, Color.white, TextAnchor.MiddleRight);
+            wallet = Label(root, "", 225, 19, 193, 32, 18, Color.white, TextAnchor.MiddleRight);
+            ActionButton(root, "help", "引导", 438, 10, 76, 44, () => { if (returnSession != null) ExitPractice(); else ShowHelp(); }, 18);
             ImageAt(root, "Elena", art.elenaPortrait, 16, 64, 98, 100, Color.white, true);
             Panel(root, "Visitor words", 119, 75, 395, 72, new Color(.96f, .96f, .90f, .92f));
-            narrative = Label(root, "", 134, 79, 365, 65, 18);
+            narrative = Label(root, "", 130, 76, 374, 70, 17);
+            var visitorButton = ActionButton(root, "current_story", "", 16, 64, 98, 100, () => ShowStoryBrief(Math.Min(Session.Snapshot.completedStory, 2)));
+            visitorButton.GetComponent<Image>().color = Color.clear;
             for (int i = 0; i < 3; i++) {
                 int slot = i;
                 tabs.Add(ActionButton(root, "order_" + i, i == 0 ? "Elena · 故事" : "常客 " + i,
                     26 + i * 164, 170, 160, 34, () => { orderSlot = slot; variantIndex = 0; Refresh(); }));
             }
-            choices.Add(ActionButton(root, "choice_quiet", "静 · 先听她说", 26, 216, 238, 42, () => { variantIndex = 0; Refresh(); }));
-            choices.Add(ActionButton(root, "choice_act", "行 · 一起整理", 276, 216, 238, 42, () => { variantIndex = 1; Refresh(); }));
-            requirements = Label(root, "", 29, 262, 334, 60, 18);
+            choices.Add(ActionButton(root, "choice_quiet", "静 · 先听她说", 26, 216, 238, 42, () => ChooseResponse(0)));
+            choices.Add(ActionButton(root, "choice_act", "行 · 一起整理", 276, 216, 238, 42, () => ChooseResponse(1)));
+            var recipe = ActionButton(root, "recipe_help", "", 29, 262, 334, 60, ShowRecipe);
+            recipe.GetComponent<Image>().color = Color.clear;
+            requirements = recipe.GetComponentInChildren<Text>(); requirements.alignment = TextAnchor.MiddleLeft;
             deliver = ActionButton(root, "deliver", "准备交付", 372, 269, 142, 42, ShowDelivery);
             for (int i = 0; i < Session.OpenSlots; i++) {
                 int col = i % 7, row = i / 7;
@@ -136,7 +146,7 @@ namespace Yijing.Presentation
         {
             if (Session == null || wallet == null) return;
             var s = Session.Snapshot;
-            wallet.text = "灵石 " + s.stones + "  ·  " + s.completedStory + " / 3";
+            wallet.text = (returnSession != null ? "练习 · " : "灵石 ") + s.stones;
             if (selected >= 0 && s.board[selected].Empty) selected = -1;
             for (int i = 0; i < cells.Count; i++) {
                 var item = s.board[i]; var cell = cells[i];
@@ -152,19 +162,16 @@ namespace Yijing.Presentation
                 choices[i].GetComponentInChildren<Text>().color = i == variantIndex ? Color.white : Ink;
             }
             for (int i = 0; i < tabs.Count; i++) tabs[i].GetComponentInChildren<Text>().color = i == orderSlot ? Color.white : Ink;
-            if (!s.firstMerge) narrative.text = "Elena：我想把手机放远一点。\n先将两撮山茶拖到一起吧。";
-            else if (orderSlot == 0) narrative.text = new[] {
-                "Elena：今天不太想整理思路。\n可以在这里坐一会吗？",
-                "Elena：手机安静下来以后，\n我才发现自己一直没有歇过。",
-                "Elena：还有些事没做完。\n不过，也许可以先喝完这杯茶。",
-                "这一段故事已结束。\n今天到这里也很好，也可继续接待常客。"
-            }[s.completedStory];
-            else narrative.text = GameSession.RegularTitle(s.regularOrders[orderSlot - 1]) + "\n为这位来客准备一份温柔的茶席。";
+            var beat = story.beats[Math.Min(s.completedStory, 2)];
+            tabs[0].GetComponentInChildren<Text>().text = s.completedStory >= 3 ? "首幕已完成" : beat.title;
+            choices[0].GetComponentInChildren<Text>().text = orderSlot == 0 ? beat.quietLabel : "静 · 留片刻安静";
+            choices[1].GetComponentInChildren<Text>().text = orderSlot == 0 ? beat.actLabel : "行 · 帮一个小忙";
             requirements.text = order == null ? "首段已完成 · 后续故事开发中" : string.Join("\n", order.variants[variantIndex].requirements.Select(r => {
                 int count = s.board.Count(x => !x.Empty && x.itemId == r.itemId);
                 return Session.Item(r.itemId).displayNameZh + "  " + Math.Min(count, r.quantity) + "/" + r.quantity;
             }));
             deliver.interactable = s.firstMerge && order != null;
+            if (order?.id == "E02" && !s.lampRepaired) deliver.interactable = false;
             deliver.GetComponentInChildren<Text>().text = order == null ? "已完成" : "交付 · +" + order.rewardStones;
             ceramic.interactable = s.firstMerge;
             recycle.interactable = selected >= 0;
@@ -172,6 +179,7 @@ namespace Yijing.Presentation
             undo.interactable = Session.CanUndo;
             selection.text = selected < 0 ? "拖动相同物品合成，也可依次点击两个格子" : Session.Item(s.board[selected].itemId).displayNameZh + " · " + Session.Item(s.board[selected].itemId).tier + " 阶　点另一格移动或合成";
             daily.text = Session.Today?.lines.Count == 3 ? "今日手账 · 查看卦卡" : "今日手账 · " + (Session.Today?.lines.Count ?? 0) + " / 3";
+            UpdateGuidance();
         }
 
         public void Produce(string chain) => Run(Session.Produce(chain, Session.Snapshot.revision), chain == "tea" ? "取来一撮山茶。" : "取来一只小盏。");
@@ -241,7 +249,9 @@ namespace Yijing.Presentation
         {
             if (selected < 0) return;
             var s = Session.Snapshot;
-            Run(Session.Recycle(selected, false, s.board[selected].instanceId, s.revision), "已折回基础库存，可撤销；下次生产优先取回。");
+            var result = Session.Recycle(selected, false, s.board[selected].instanceId, s.revision);
+            if (result.Success && recoveryStage >= 0) recoveryStage = 1;
+            Run(result, "已折回基础库存，可撤销；下次生产优先取回。");
         }
 
         private void ShowInventory(int selectedInventory = -1)
@@ -277,7 +287,8 @@ namespace Yijing.Presentation
             var order = Session.Order(orderSlot); if (order == null) return;
             NewModal("为来客备好茶席");
             var variant = order.variants[variantIndex];
-            Label(modal, variantIndex == 0 ? "静 · 先泡一壶茶，不急着说。" : "行 · 一起把桌面空出来，再慢慢坐。", 44, 175, 452, 62, 22);
+            var beat = orderSlot == 0 ? story.beats[Session.Snapshot.completedStory] : null;
+            Label(modal, beat == null ? "把备好的物件送给这位来客。" : variantIndex == 0 ? beat.quietLabel : beat.actLabel, 44, 175, 452, 62, 22);
             for (int i = 0; i < variant.requirements.Length; i++) {
                 var requirement = variant.requirements[i];
                 ImageAt(modal, "Required item", art.FindItem(requirement.itemId), 54, 270 + i * 114, 92, 92, Color.white, true);
@@ -288,10 +299,14 @@ namespace Yijing.Presentation
             var s = Session.Snapshot;
             Label(modal, ids == null ? "材料未齐；高阶物品不能代替低阶。" : "本次消耗 " + ids.Length + " 件物品，获得 " + order.rewardStones + " 灵石。", 48, 600, 444, 55, 19);
             var confirm = ActionButton(modal, "confirm_delivery", "确认交付", 48, 678, 444, 54, () => {
-                string response = variantIndex == 0 ? "谢谢。原来坐下来，不需要先有一个结论。" : "只整理这一小块，好像就够了。";
+                string response = "来客带着茶离开，山房里又空出一个座位。";
                 bool hadCard = Session.Today?.lines.Count == 3;
                 var result = Session.Deliver(orderSlot, order.id, variant.id, ids, includeInventory, Guid.NewGuid().ToString("N"), s.revision);
-                if (result.Success) { CloseModal(); selected = -1; Refresh(); ShowResponse(response, !hadCard && Session.Today?.lines.Count == 3, !hadCard); }
+                if (result.Success) {
+                    CloseModal(); selected = -1; Refresh();
+                    if (orderSlot == 0) ShowStoryResponse(Session.Snapshot.completedStory);
+                    else ShowResponse(response, !hadCard && Session.Today?.lines.Count == 3, !hadCard);
+                }
                 else { Tell(result.Message); RenderDelivery(result.Message); }
             }); confirm.interactable = ids != null;
             if (orderSlot > 0) ActionButton(modal, "replace_request", "免费换一份请求", 48, 756, 444, 42, () => {
@@ -304,7 +319,7 @@ namespace Yijing.Presentation
         private void ShowResponse(string response, bool newCard, bool recordedLine)
         {
             NewModal("茶席已备好");
-            ImageAt(modal, "Elena", art.elenaPortrait, 160, 200, 220, 220, Color.white, true);
+            Label(modal, "一位来客的茶席", 56, 220, 428, 100, 26, Jade, TextAnchor.MiddleCenter);
             Label(modal, response, 56, 442, 428, 108, 24, Ink, TextAnchor.MiddleCenter);
             Label(modal, recordedLine ? "灵石与今日一爻已保存。" : "灵石已保存，今日卦卡保持不变。", 56, 571, 428, 40, 19, Jade, TextAnchor.MiddleCenter);
             ActionButton(modal, "response_continue", newCard ? "翻开今日卦卡" : "回到茶案", 56, 645, 428, 54, () => { CloseModal(); if (newCard) ShowJournal(); });
@@ -313,15 +328,19 @@ namespace Yijing.Presentation
         private void ShowSanctuary()
         {
             NewModal("山房 · 门边灯");
-            ImageAt(modal, "Room view", art.sanctuaryBase, 45, 175, 450, 455, Color.white, true);
+            ImageAt(modal, "Room view", art.sanctuaryBase, 45, 160, 450, 330, Color.white, true);
             var s = Session.Snapshot;
             // The v1 room painting is flattened. This overlay is explicitly a prototype light response.
-            Panel(modal, "Warm light response", 45, 175, 450, 455, s.lampRepaired ? new Color(1f, .73f, .30f, .15f) : new Color(.08f, .13f, .16f, .28f));
-            Label(modal, s.lampRepaired ? "门边的光暖了一点。\n这里始终可以留一个座位。" : "完成第一份请求后，用 40 灵石点亮门边灯。", 48, 648, 444, 74, 21);
+            Panel(modal, "Warm light response", 45, 160, 450, 330, s.lampRepaired ? new Color(1f, .73f, .30f, .15f) : new Color(.08f, .13f, .16f, .28f));
+            Label(modal, s.lampRepaired ? story.lampAfter : story.lampBefore, 48, 514, 444, 218, 20);
             ActionButton(modal, "repair_lamp", s.lampRepaired ? "门灯已点亮" : "点亮门灯 · 40 灵石", 48, 749, 444, 52, () => {
                 var result = Session.RepairLamp(Guid.NewGuid().ToString("N"), s.revision);
                 Run(result, "门边灯已点亮。"); if (result.Success) ShowSanctuary();
             }).interactable = !s.lampRepaired && s.completedStory >= 1 && s.stones >= 40;
+            if (s.lampRepaired) ActionButton(modal, "lamp_continue", s.completedStory < 3 ? "回到茶案 · 继续故事" : "回到茶案", 48, 820, 444, 48, () => {
+                CloseModal(); orderSlot = 0; Refresh();
+                if (s.completedStory < 3) ShowStoryBrief(s.completedStory);
+            });
         }
 
         private void ShowJournal(int historyOffset = 0)
@@ -333,7 +352,7 @@ namespace Yijing.Presentation
             historyOffset = Mathf.Clamp(historyOffset, 0, records.Count - 1);
             var record = records[historyOffset]; var card = Session.Card(record);
             ImageAt(modal, "Oracle paper", art.oracleBackgrounds[historyOffset % art.oracleBackgrounds.Length], 28, 147, 484, 680, Color.white);
-            Label(modal, record.date + " · 坤上", 62, 172, 416, 35, 18, Jade, TextAnchor.MiddleCenter);
+            Label(modal, record.date + " · " + string.Join(" / ", record.lines.Select(x => x == 0 ? "静" : "行")), 62, 172, 416, 35, 18, Jade, TextAnchor.MiddleCenter);
             string bits = string.Concat(record.lines).PadRight(3, '?') + record.upperBits;
             for (int row = 0; row < 6; row++) {
                 char bit = bits[5 - row]; float top = 229 + row * 20;
@@ -345,7 +364,7 @@ namespace Yijing.Presentation
             Label(modal, card == null ? "每份茶席，留下一次回应。" : card.titleZh, 62, 421, 416, 45, 24, Ink, TextAnchor.MiddleCenter);
             Label(modal, card == null ? "每天前三次交付从下往上留爻。静为阴，行为阳。\n\n跨日后未完成的小记会保留。没有连续签到，也不需要补齐错过的日子。" : card.bodyZh, 69, 493, 402, 196, 20);
             Label(modal, card == null ? "继续接待来客，或今天先到这里。" : card.promptZh, 69, 699, 402, 66, 20, Jade, TextAnchor.MiddleCenter);
-            Label(modal, "原创现代反思 · 供自我觉察", 62, 780, 416, 28, 14, Jade, TextAnchor.MiddleCenter);
+            Label(modal, "自下而上：静为阴，行为阳 · 上卦固定坤", 62, 780, 416, 28, 14, Jade, TextAnchor.MiddleCenter);
             int offset = historyOffset;
             ActionButton(modal, "previous_day", "较早小记", 48, 836, 212, 42, () => ShowJournal(offset + 1)).interactable = offset + 1 < records.Count;
             ActionButton(modal, "next_day", "较新小记", 280, 836, 212, 42, () => ShowJournal(offset - 1)).interactable = offset > 0;
@@ -353,19 +372,21 @@ namespace Yijing.Presentation
 
         private void Run(ActionResult result, string success)
         {
+            if (result.Success && recoveryStage == 1 && Session.Snapshot.guide.undoneOnce && !Session.CanUndo) recoveryStage = -1;
             Refresh(); Tell(result.Success ? success : result.Message);
             if (!result.Success && modal != null) {
                 var notice = modal.Find("Operation notice"); if (notice != null) Destroy(notice.gameObject);
                 var label = Label(modal, result.Message, 38, 884, 464, 50, 16, new Color(.57f, .23f, .16f), TextAnchor.MiddleCenter);
                 label.name = "Operation notice";
             }
+            if (result.Success && modal == null) ResumeGuidance();
         }
         private void Tell(string message) { if (status != null) status.text = message; }
         private void NewModal(string title)
         {
             CloseModal(); CancelDrag();
             modal = Panel(root, "Modal", 0, 0, 540, 960, Paper);
-            Label(modal, title, 32, 67, 366, 50, 30);
+            Label(modal, title, 32, 67, 366, 50, title.Length > 11 ? 24 : 30);
             ActionButton(modal, "close_modal", "返回", 416, 68, 88, 43, CloseModal);
         }
         private void CloseModal() { if (modal != null) { modal.gameObject.SetActive(false); Destroy(modal.gameObject); modal = null; } }

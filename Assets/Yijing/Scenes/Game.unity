@@ -151,6 +151,7 @@ MonoBehaviour:
   configuration: {fileID: 11400000, guid: 4fec6835e161744b8b387443c9246709, type: 2}
   art: {fileID: 11400000, guid: 26f0ca2105cf94f718c4bbcc50b6683a, type: 2}
   font: {fileID: 12800000, guid: 695f82c2666fe4760a084da058b7c56f, type: 3}
+  storyContent: {fileID: 4900000, guid: b63df05ff21e34998a17a8d8fd65b3ec, type: 3}
 --- !u!4 &89326393
 Transform:
   m_ObjectHideFlags: 0

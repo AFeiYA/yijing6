@@ -6,6 +6,7 @@
 
 - Unity **6.6 / 6000.6.0f1**，C#、URP 2D、Input System、uGUI。
 - 当前阶段：M1／M2 首段可玩版。已串通前三单、两条合成链、储物／回收、门灯、每日卦卡与本地存档；完整序章仍在开发。
+- 0.3.0 新增开场故事、渐进引导、实时下一步目标、合成路径、三单六段分支回应和独立练习。既有存档会兼容升级。
 - 项目根目录就是 Unity 工程目录，包含 `Assets`、`Packages`、`ProjectSettings`。
 - [GDD v2.0](docs/Yijing_Unity_GDD_v2.0.md) 规定玩法；[工程决策](docs/ENGINE_DECISION.md) 覆盖其中第 14.1 节的旧引擎版本建议。
 
@@ -17,6 +18,8 @@
 4. 配置通过校验后进入茶案。点击茶台生成物品，拖动相同物品合成；也可依次点击来源格和目标格。完成第一次合成后开放器架与静／行选择。
 
 首轮试玩步骤和预期结果见 [试玩说明](docs/PLAYTEST_M1.md)。Game 场景已经装配好；重新装配可使用 **Yijing → Playable → Prepare Scene**。macOS 试玩包可通过 **Yijing → Playable → Build macOS Preview** 构建至 `Artifacts/Build/Yijing.app`。
+
+已玩过的存档可通过右上角 **引导 → 从头练习 · 不影响当前进度** 重走教程。设计依据与故事结构见 [故事和新手引导](docs/STORY_ONBOARDING.md)。
 
 `Bootstrap` 与 `Game` 已加入构建场景。不要从空场景判断游戏启动是否正常。
 
