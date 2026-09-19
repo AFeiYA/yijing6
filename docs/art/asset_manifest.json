@@ -1,0 +1,257 @@
+{
+  "version": "art-01",
+  "created": "2026-09-19",
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "id": "sanctuary_base_v1",
+      "path": "Assets/Yijing/Art/Sanctuary/sanctuary_base_v1.png",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "transparentFraction": 0,
+      "alphaBounds": null,
+      "sha256": "5a7d7b02dc4bbeed622b0bddcd4e1bd4d7d8fd73411aee214d206b25d6a4db9c",
+      "prompt": "Use case: stylized-concept.\nAsset type: production background illustration for a portrait Unity 2D/2.5D mobile tea sanctuary game, not a UI mockup.\nPrimary request: Create a single full-bleed vertical 9:16 scene of a small contemporary urban tea sanctuary inspired by restrained Song-dynasty celadon aesthetics. Fixed slightly elevated frontal three-quarter camera, intimate human scale. Warm wood tea table and a quiet window seat, pale plaster, rain-softened courtyard window, a few carefully chosen pale celadon vessels, subtle paper lantern light. A small water basin and a restrained brass wind chime can sit at the edges. No people.\nComposition: portrait image, clear readable architectural depth with back wall/window in upper half, a table zone in middle, understated empty floor/wood in lower quarter for overlay UI. Keep essential scene content within central 80% so it survives portrait cropping. Not an isometric floating diorama. The room should feel already cared for, modest and lived in, never a ruin or palace. Window is a soft grey urban courtyard with bamboo and mist.\nStyle: elegant hand-painted 2.5D game environment, tactile matte gouache and refined illustration, softly modeled forms, deliberate clean silhouettes, quiet premium indie game art. Celadon grey-green, warm rice-paper ivory, muted walnut, charcoal, a tiny amber accent. Soft overcast daylight plus one modest warm light. Detailed but visually calm.\nConstraints: no text, no logo, no watermark, no UI, no grid, no characters, no magic symbols, no heavy ornamental dragons, no oversaturated green, no photorealistic lens effects. This is a single flattened base illustration; don't pretend it has editable layers. High resolution.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "tea_01",
+      "path": "Assets/Yijing/Art/Board/Items/tea_01_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.7761,
+      "alphaBounds": [
+        57,
+        52,
+        1230,
+        1236
+      ],
+      "sha256": "d4eb1a410834fa95cc1b1fe197af1d82a62e1e3c6d2212509ea12570bab97b49",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: A single small tidy pinch of loosely curled dried green tea leaves, five to eight distinct deep olive curled leaves in a compact attractive pile. No bowl, package or additional props.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "tea_02",
+      "path": "Assets/Yijing/Art/Board/Items/tea_02_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6068,
+      "alphaBounds": [
+        0,
+        21,
+        1192,
+        1228
+      ],
+      "sha256": "3dc8492ead4fcf0297e5f85126014c138fa8ef7b3946489eb6b70e15959f0d14",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One small folded warm ivory paper pouch of mountain tea, closed with a thin muted celadon cord; a few dark tea leaves visible at its slightly open folded top. Squat soft rectangular packet, not a jar.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "tea_03",
+      "path": "Assets/Yijing/Art/Board/Items/tea_03_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6106,
+      "alphaBounds": [
+        0,
+        0,
+        1234,
+        1254
+      ],
+      "sha256": "fde56d3c377be0f89e9adfbad0375ee30bb8bd0a59a03468f837922e578bae8d",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One short cylindrical tea caddy, muted pale celadon body, fitted natural wood lid, very simple unmarked surface. Squat silhouette, no handle and no spout. One small loose tea leaf beside its base.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "tea_04",
+      "path": "Assets/Yijing/Art/Board/Items/tea_04_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6358,
+      "alphaBounds": [
+        49,
+        55,
+        1199,
+        1230
+      ],
+      "sha256": "6ec77fabf9bffeae8e6610a8262d0360fb0ee906ea07686aaff797319620f8da",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One refined larger rounded-shoulder tea storage jar, deep desaturated jade green ceramic body, small fitted wooden lid, a narrow warm ivory cord around the neck. Tall elegant silhouette distinct from a short straight tea tin. No text or ornament.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "tea_05",
+      "path": "Assets/Yijing/Art/Board/Items/tea_05_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.4949,
+      "alphaBounds": [
+        0,
+        68,
+        1230,
+        1254
+      ],
+      "sha256": "0fbb9d0e109430ab940523b89c817c72b9b5a245e4f95dbbf3d1801b752d0f37",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One open shallow walnut presentation box containing two small celadon tea caddies and an ivory folded tea packet, a muted green fabric tie draped neatly over the front rim. Compact unified gift set silhouette, no tea cups and no teapot.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "ceramic_01",
+      "path": "Assets/Yijing/Art/Board/Items/ceramic_01_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6786,
+      "alphaBounds": [
+        49,
+        51,
+        1192,
+        1199
+      ],
+      "sha256": "82b3954562060ad54c33bd1f7ff4e61a6113b6c7aeac5d901aa4a7b85ec41dac",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One small simple pale celadon Chinese tea bowl, without handle, shallow rounded open form, unadorned rim and subtle glazed interior, not containing tea. Single cup only.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "ceramic_02",
+      "path": "Assets/Yijing/Art/Board/Items/ceramic_02_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.7138,
+      "alphaBounds": [
+        49,
+        23,
+        1138,
+        1199
+      ],
+      "sha256": "f2754c9a8dd4025aa1417c5c341c370039ec21d60ffcda6ac70c4a6090e7f316",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: Exactly two matching small pale celadon handleless Chinese tea bowls, one slightly behind the other, clearly distinct silhouettes, no tea, no tray, no saucers. A graceful paired set.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "ceramic_03",
+      "path": "Assets/Yijing/Art/Board/Items/ceramic_03_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6324,
+      "alphaBounds": [
+        111,
+        23,
+        1228,
+        1222
+      ],
+      "sha256": "e41335ac71cb2114ede3d1a1cc62dd4da773a0e99ef65de1096d1fb426b4937e",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One refined taller pale celadon handleless tea cup with a delicate foot ring resting on a matching shallow saucer. Slightly flared rim and graceful profile, visibly more refined and taller than a simple bowl. No lid, no tea.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "ceramic_04",
+      "path": "Assets/Yijing/Art/Board/Items/ceramic_04_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.6505,
+      "alphaBounds": [
+        39,
+        53,
+        1233,
+        1198
+      ],
+      "sha256": "b6d7677c1b4b0d5fb93ae7704e3fbc0e9e916ef0646b47417187f7f0330373b1",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One beautiful understated pale celadon ceramic teapot with a short curved spout, rounded body, small fitted lid and a slim side handle. Distinct clear teapot silhouette. No cups or tray.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "ceramic_05",
+      "path": "Assets/Yijing/Art/Board/Items/ceramic_05_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.5758,
+      "alphaBounds": [
+        0,
+        21,
+        1240,
+        1254
+      ],
+      "sha256": "b942bbc1bf562f31c1eea93ce038417b065ae9ddc64d2b4f4f775f567e89af39",
+      "prompt": "Use case: stylized-concept. Asset type: one production inventory sprite for a Unity merge-2 mobile game, on a genuinely transparent alpha background. Style: refined hand-painted 2.5D celadon tea sanctuary, matte gouache edges with softly modeled volume, restrained Song-inspired simplicity, warm ivory and muted celadon grey-green, subtle walnut and dark tea-leaf accents. Fixed three-quarter top view, light from upper left, clean strong silhouette, readable when scaled to 80 pixels. Square canvas, one centered item/group occupying about 72% of the canvas with clear padding on every side. The sprite is an isolated item, not on a tile or card. No text, numerals, badges, logos, labels, frame, halo, hands or scene. No opaque background, no checkerboard drawn into the image, no floor, no large cast shadow, no glow. Preserve real transparency.\nSubject: One complete pale celadon tea service: a rounded elegant teapot and exactly two small handleless cups arranged on one compact dark walnut tea tray. Unified compact composition, clear silhouettes, no extra props.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "elena_portrait_v1",
+      "path": "Assets/Yijing/Art/Characters/elena_portrait_v1.png",
+      "width": 1254,
+      "height": 1254,
+      "transparent": true,
+      "transparentFraction": 0.4375,
+      "alphaBounds": [
+        0,
+        0,
+        1240,
+        1254
+      ],
+      "sha256": "29b303af41d779c4bb02410ad9417c0138c825a3f3b660e987422ac967437fbc",
+      "prompt": "Use case: illustration-story. Asset type: isolated character portrait sprite for a quiet, contemporary 2D/2.5D tea sanctuary game, on a genuinely transparent background.\nSubject: Elena, an original fictional adult woman around 30, a working software engineer stopping at a small urban tea room. Natural relaxed face with a slightly tired but attentive, gentle expression, dark chestnut hair loosely tucked behind the ear and gathered low, practical warm ivory shirt beneath a muted sage cardigan. A believable ordinary contemporary person with agency, no fantasy costume. Head and upper torso visible, turned very slightly three-quarter toward the viewer, arms and hands outside crop, eyes looking toward the viewer with a small reserved smile. Complete silhouette of head, hair and shoulders, generous margin around hair. Portrait fits a square canvas, bust ends cleanly at lower edge.\nStyle: refined hand-painted indie narrative-game illustration, matte gouache texture, softly modeled natural facial proportions, clean silhouette and quiet warmth, restrained celadon grey-green, warm ivory, charcoal and walnut brown. Soft daylight from upper left, no glossy anime eyes, not photorealistic, no beauty advertising.\nConstraints: a single character only, no background/room/chair, no frame, no text, no logos, no props, no glowing effects, no heavy makeup. Actual transparent alpha around the character, not a drawn checkerboard.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "oracle_mist_v1",
+      "path": "Assets/Yijing/Art/Cards/oracle_mist_v1.png",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "transparentFraction": 0,
+      "alphaBounds": null,
+      "sha256": "baa18bab9bc83eb392431d6c9017c00542f86f8d441bae69828b71b70f172474",
+      "prompt": "Use case: stylized-concept. Asset type: full-bleed background texture for a 9:16 portrait daily reflection card in a refined Unity tea sanctuary game. Request high resolution portrait artwork suitable for 1080x1920 export, ideally 2160x3840. NOT a complete designed card and NOT a UI mockup. Warm ivory handmade paper with very subtle visible fiber texture, pale celadon grey-green and softly diluted charcoal watercolor. Spacious restrained Song-inspired poetic brushwork, exceptionally quiet composition. The central 65% of width and middle 65% of height must remain almost blank, uniformly very light ivory for dark readable text and a six-line hexagram that will be drawn later in UI. Art only along the lowest fifth and a small edge/corner accent. Soft low contrast, no hard frame, no text, no letters, no calligraphy, no numbers, no logo, no watermark, no hexagrams, no yin-yang symbol, no objects in the center. Opaque paper background, do not use transparency.\nTheme: distant misty mountain ridges in washed celadon and faint grey ink, tiny at the very bottom fading upward into paper; upper portion spacious and empty. No buildings, no people.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "oracle_water_v1",
+      "path": "Assets/Yijing/Art/Cards/oracle_water_v1.png",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "transparentFraction": 0,
+      "alphaBounds": null,
+      "sha256": "73e41931e43d51184c17a3f061655e8ac82d9a17ef72378ce6db312add8d1a52",
+      "prompt": "Use case: stylized-concept. Asset type: full-bleed background texture for a 9:16 portrait daily reflection card in a refined Unity tea sanctuary game. Request high resolution portrait artwork suitable for 1080x1920 export, ideally 2160x3840. NOT a complete designed card and NOT a UI mockup. Warm ivory handmade paper with very subtle visible fiber texture, pale celadon grey-green and softly diluted charcoal watercolor. Spacious restrained Song-inspired poetic brushwork, exceptionally quiet composition. The central 65% of width and middle 65% of height must remain almost blank, uniformly very light ivory for dark readable text and a six-line hexagram that will be drawn later in UI. Art only along the lowest fifth and a small edge/corner accent. Soft low contrast, no hard frame, no text, no letters, no calligraphy, no numbers, no logo, no watermark, no hexagrams, no yin-yang symbol, no objects in the center. Opaque paper background, do not use transparency.\nTheme: a few delicate concentric water ripples and one very faint reflection of light at the very bottom, pale blue-grey celadon ink diluted into warm paper, a tranquil poetic water study. No fish, no boats, no flowers.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    },
+    {
+      "id": "oracle_bamboo_v1",
+      "path": "Assets/Yijing/Art/Cards/oracle_bamboo_v1.png",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "transparentFraction": 0,
+      "alphaBounds": null,
+      "sha256": "6c6caf1550e7a937ae2f810dd7dea781333e9938ea2156027fa9a83bb15cad8f",
+      "prompt": "Use case: stylized-concept. Asset type: full-bleed background texture for a 9:16 portrait daily reflection card in a refined Unity tea sanctuary game. Request high resolution portrait artwork suitable for 1080x1920 export, ideally 2160x3840. NOT a complete designed card and NOT a UI mockup. Warm ivory handmade paper with very subtle visible fiber texture, pale celadon grey-green and softly diluted charcoal watercolor. Spacious restrained Song-inspired poetic brushwork, exceptionally quiet composition. The central 65% of width and middle 65% of height must remain almost blank, uniformly very light ivory for dark readable text and a six-line hexagram that will be drawn later in UI. Art only along the lowest fifth and a small edge/corner accent. Soft low contrast, no hard frame, no text, no letters, no calligraphy, no numbers, no logo, no watermark, no hexagrams, no yin-yang symbol, no objects in the center. Opaque paper background, do not use transparency.\nTheme: a slender soft bamboo silhouette emerging only from the lower left edge with sparse grey-green leaves, faint bamboo shadow at a far upper corner, the broad center almost empty warm paper. No dense foliage, no red seals.",
+      "generator": "built-in image_gen",
+      "sourceUnmodified": true
+    }
+  ]
+}

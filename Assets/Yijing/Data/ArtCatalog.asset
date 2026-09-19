@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bee39eabe47447d3b57fbdabe3508bc, type: 3}
+  m_Name: ArtCatalog
+  m_EditorClassIdentifier: Yijing.Infrastructure::Yijing.Infrastructure.ArtCatalog
+  sanctuaryBase: {fileID: 21300000, guid: 78b7a2562dc044208f4daad3f649e700, type: 3}
+  elenaPortrait: {fileID: 21300000, guid: da9df9e80dbf4b9aa5ecf0a58c6b63d9, type: 3}
+  oracleBackgrounds:
+  - {fileID: 21300000, guid: 7fccf9f9ee084265a89390a329ff8607, type: 3}
+  - {fileID: 21300000, guid: 1c4cf218ea674cdfb9c0f7e95c2a0efd, type: 3}
+  - {fileID: 21300000, guid: 3b9c5a27a9f9472198fc96817e3028d7, type: 3}
+  items:
+  - itemId: tea_01
+    sprite: {fileID: 21300000, guid: 2e2cfa6f0ce2484a92b1845d7aa4fd83, type: 3}
+  - itemId: tea_02
+    sprite: {fileID: 21300000, guid: fc3ba0fe7555491a87c73b9dc5aed25a, type: 3}
+  - itemId: tea_03
+    sprite: {fileID: 21300000, guid: 4a838c0bfa8f46078136103e27b1c7ad, type: 3}
+  - itemId: tea_04
+    sprite: {fileID: 21300000, guid: fa09e7a77df848b5af9732c39cf84e88, type: 3}
+  - itemId: tea_05
+    sprite: {fileID: 21300000, guid: dce26fb5cef540c0af3dffe944ce10f5, type: 3}
+  - itemId: ceramic_01
+    sprite: {fileID: 21300000, guid: 43bd0b87f31044e7982852c10d6ac5c1, type: 3}
+  - itemId: ceramic_02
+    sprite: {fileID: 21300000, guid: 84d1c6fcdcd54d018d7a473bbfbc408d, type: 3}
+  - itemId: ceramic_03
+    sprite: {fileID: 21300000, guid: 54e8303cd59049a1a84caf399f0c1246, type: 3}
+  - itemId: ceramic_04
+    sprite: {fileID: 21300000, guid: 7947e2f69ee3464e98f7079a7fa854ac, type: 3}
+  - itemId: ceramic_05
+    sprite: {fileID: 21300000, guid: 6a7ad35cba3e4157a678cd89e6f2a2c3, type: 3}

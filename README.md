@@ -61,3 +61,7 @@ bash scripts/unity-check.sh playmode
 见 [开发清单](docs/DEVELOPMENT_PLAN.md)。优先实现纯 C# 棋盘、确定性产出、移动／交换／二合与满盘恢复，再连接 E01 订单和可靠本地存档。
 
 初始化时本机已装 Mac、WebGL 模块，未装 Android、iOS Build Support。移动构建、签名和真机验证仍需完成；包标识 `com.afeiya.yijing` 暂用于开发，正式上架前确认。
+
+## 首批美术资源
+
+已生成 15 张 PNG 并建立 `Assets/Yijing/Data/ArtCatalog.asset`。在 Unity 使用 **Yijing → Art → Open Asset Preview** 浏览；资源清单、提示词和使用边界见 [美术说明](docs/art/README.md)。可直接打开 [浏览器预览](docs/art/preview.html)。这批资源还未接入可玩场景。
