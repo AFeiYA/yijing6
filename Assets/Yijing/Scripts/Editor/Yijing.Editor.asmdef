@@ -5,6 +5,7 @@
     "Yijing.Domain",
     "Yijing.Infrastructure",
     "Yijing.Application",
+    "Yijing.Presentation",
     "Unity.RenderPipelines.Universal.Runtime",
     "Unity.RenderPipelines.Universal.2D.Runtime"
   ],

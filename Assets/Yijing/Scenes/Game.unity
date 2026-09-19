@@ -119,6 +119,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &89326391
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 89326393}
+  - component: {fileID: 89326392}
+  m_Layer: 0
+  m_Name: Tea Room Game
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &89326392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89326391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc7b55a62f1c4caaa7be7dc1e94d18e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Yijing.Presentation::Yijing.Presentation.GamePresenter
+  configuration: {fileID: 11400000, guid: 4fec6835e161744b8b387443c9246709, type: 2}
+  art: {fileID: 11400000, guid: 26f0ca2105cf94f718c4bbcc50b6683a, type: 2}
+  font: {fileID: 12800000, guid: 695f82c2666fe4760a084da058b7c56f, type: 3}
+--- !u!4 &89326393
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89326391}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &887882643
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,3 +413,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 887882647}
   - {fileID: 2055451170}
+  - {fileID: 89326393}

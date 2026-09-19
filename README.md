@@ -5,7 +5,7 @@
 ## 开发基线
 
 - Unity **6.6 / 6000.6.0f1**，C#、URP 2D、Input System、uGUI。
-- 当前阶段：M0 工程准备；尚未实现合成棋盘或完整可玩流程。
+- 当前阶段：M1／M2 首段可玩版。已串通前三单、两条合成链、储物／回收、门灯、每日卦卡与本地存档；完整序章仍在开发。
 - 项目根目录就是 Unity 工程目录，包含 `Assets`、`Packages`、`ProjectSettings`。
 - [GDD v2.0](docs/Yijing_Unity_GDD_v2.0.md) 规定玩法；[工程决策](docs/ENGINE_DECISION.md) 覆盖其中第 14.1 节的旧引擎版本建议。
 
@@ -14,7 +14,9 @@
 1. Unity Hub → Add → Add project from disk，选择此仓库根目录。
 2. 指定 **6000.6.0f1**，等待包还原和资源导入。
 3. 打开 `Assets/Yijing/Scenes/Bootstrap.unity`，点击 Play。
-4. 配置通过校验后进入 `Game` 场景。当前只有正交相机、全局 2D 光和青绿色背景，这是工程启动验证画面，尚无游戏交互。
+4. 配置通过校验后进入茶案。点击茶台生成物品，拖动相同物品合成；也可依次点击来源格和目标格。完成第一次合成后开放器架与静／行选择。
+
+首轮试玩步骤和预期结果见 [试玩说明](docs/PLAYTEST_M1.md)。Game 场景已经装配好；重新装配可使用 **Yijing → Playable → Prepare Scene**。macOS 试玩包可通过 **Yijing → Playable → Build macOS Preview** 构建至 `Artifacts/Build/Yijing.app`。
 
 `Bootstrap` 与 `Game` 已加入构建场景。不要从空场景判断游戏启动是否正常。
 
@@ -42,7 +44,8 @@ bash scripts/unity-check.sh playmode
 | --- | --- |
 | `Assets/Yijing/Scripts/Domain` | 普通 C# 规则与配置校验 |
 | `Assets/Yijing/Scripts/Application` | 启动和后续用例编排 |
-| `Assets/Yijing/Scripts/Infrastructure` | 配置资产和后续存档适配 |
+| `Assets/Yijing/Scripts/Infrastructure` | 配置资产、原子 JSON 存档及备份恢复 |
+| `Assets/Yijing/Scripts/Presentation` | 茶案界面、指针交互、山房与每日手账 |
 | `Assets/Yijing/Scripts/Editor` | 配置导入和工程工具 |
 | `Assets/Yijing/Scenes` | Bootstrap、Game |
 | `Assets/Yijing/Tests` | EditMode 与 PlayMode 检查 |
@@ -58,10 +61,10 @@ bash scripts/unity-check.sh playmode
 
 ## 下一阶段
 
-见 [开发清单](docs/DEVELOPMENT_PLAN.md)。优先实现纯 C# 棋盘、确定性产出、移动／交换／二合与满盘恢复，再连接 E01 订单和可靠本地存档。
+见 [开发清单](docs/DEVELOPMENT_PLAN.md)。先人工验证当前三单循环的操作手感，再扩展 Elena 完整十八单、其余修葺和解锁、声音、英文和卡片导出。
 
 初始化时本机已装 Mac、WebGL 模块，未装 Android、iOS Build Support。移动构建、签名和真机验证仍需完成；包标识 `com.afeiya.yijing` 暂用于开发，正式上架前确认。
 
 ## 首批美术资源
 
-已生成 15 张 PNG 并建立 `Assets/Yijing/Data/ArtCatalog.asset`。在 Unity 使用 **Yijing → Art → Open Asset Preview** 浏览；资源清单、提示词和使用边界见 [美术说明](docs/art/README.md)。可直接打开 [浏览器预览](docs/art/preview.html)。这批资源还未接入可玩场景。
+已生成 15 张 PNG 并建立 `Assets/Yijing/Data/ArtCatalog.asset`。在 Unity 使用 **Yijing → Art → Open Asset Preview** 浏览；资源清单、提示词和使用边界见 [美术说明](docs/art/README.md)。可直接打开 [浏览器预览](docs/art/preview.html)。物品、头像、山房与三张卡底均已用于可玩场景；独立修葺分层还未制作。

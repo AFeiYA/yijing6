@@ -1,5 +1,5 @@
 {
   "name": "Yijing.PlayModeTests",
-  "references": ["Yijing.Application"],
+  "references": ["Yijing.Application", "Yijing.Presentation", "Yijing.Domain", "Unity.ugui"],
   "optionalUnityReferences": ["TestAssemblies"]
 }

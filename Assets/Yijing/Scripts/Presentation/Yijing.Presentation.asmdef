@@ -1,0 +1,5 @@
+{
+  "name": "Yijing.Presentation",
+  "rootNamespace": "Yijing.Presentation",
+  "references": ["Yijing.Domain", "Yijing.Infrastructure", "Unity.ugui", "Unity.InputSystem"]
+}
